@@ -1,6 +1,8 @@
 package com.example.tipcalculator
 
+import android.animation.ArgbEvaluator
 import android.annotation.SuppressLint
+import android.content.res.ColorStateList
 import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -11,9 +13,10 @@ import android.widget.EditText
 import android.widget.SeekBar
 import android.widget.SeekBar.OnSeekBarChangeListener
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 
 private const val TAG = "MainActivity"
-private const val INIT_TIP_PERCENT = 15
+private const val INIT_TIP_PERCENT = 20
 
 class MainActivity : AppCompatActivity() {
     private lateinit var tvTipPercent: TextView
@@ -31,9 +34,10 @@ class MainActivity : AppCompatActivity() {
         tvTotalAmount = findViewById(R.id.tvTotal)
         billAmount = findViewById(R.id.tvAmountInput)
 
-        //Initialize tip value at 15%
+        //Initialize tip value at 20%
         tipScroll.progress = INIT_TIP_PERCENT
         tvTipPercent.text = INIT_TIP_PERCENT.toString()
+        setColor(INIT_TIP_PERCENT)
 
 
         tipScroll.setOnSeekBarChangeListener(object : OnSeekBarChangeListener {
@@ -41,6 +45,7 @@ class MainActivity : AppCompatActivity() {
             override fun onProgressChanged(p0: SeekBar?, p1: Int, p2: Boolean) {
                 //When change occurs on scrollbar, info is logged, and values are calculated
                 Log.i(TAG, "Current Progress is: $p1")
+                setColor(p1)
                 tvTipPercent.text = "$p1%"
                 tipAndTotalCalc()
             }
@@ -57,6 +62,16 @@ class MainActivity : AppCompatActivity() {
                 tipAndTotalCalc()
             }
         })
+    }
+
+    private fun setColor(p1: Int) {
+        val color = ArgbEvaluator().evaluate(
+            p1.toFloat() / tipScroll.max,
+            ContextCompat.getColor(this, R.color.color_best_tip),
+            ContextCompat.getColor(this, R.color.color_worst_tip)
+        ) as Int
+        tipScroll.thumb.setTint(color)
+        tipScroll.progressDrawable.setTint(color)
     }
 
     @SuppressLint("SetTextI18n")

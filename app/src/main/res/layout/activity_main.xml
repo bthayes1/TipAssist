@@ -64,7 +64,8 @@
         android:textColorHint="#78909C"
         android:textSize="20sp"
         app:layout_constraintStart_toEndOf="@+id/tvBase"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        android:backgroundTint="@color/black"/>
 
     <SeekBar
         android:id="@+id/tipPercentBar"
@@ -72,6 +73,7 @@
         android:layout_height="wrap_content"
         android:max="30"
         android:scrollbarSize="30dp"
+        android:thumbTint="#FF9800"
         app:layout_constraintBottom_toBottomOf="@+id/tvTipPercent"
         app:layout_constraintStart_toStartOf="@+id/tvAmountInput"
         app:layout_constraintTop_toTopOf="@+id/tvTipPercent" />
