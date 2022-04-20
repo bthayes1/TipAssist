@@ -2,7 +2,6 @@ package com.example.tipcalculator
 
 import android.animation.ArgbEvaluator
 import android.annotation.SuppressLint
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -10,7 +9,9 @@ import android.util.Log
 import android.view.View
 import android.widget.*
 import android.widget.SeekBar.OnSeekBarChangeListener
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+
 
 private const val TAG = "MainActivity"
 private const val INIT_TIP_PERCENT = 20
@@ -36,14 +37,14 @@ class MainActivity : AppCompatActivity() {
         billAmount = findViewById(R.id.tvAmountInput)
 
         tvSign = findViewById(R.id.tvSign)        //The currency symbol next to amounts
-
         spinner = findViewById(R.id.spinner)      //The dropdown menu
-
+        val lastCurr = loadData()                 //Load the index value of the last currency
 
         // Setup an array adapter to choose different currencies
         val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, currencyList)
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         spinner.adapter = adapter
+        spinner.setSelection(lastCurr)
 
         //Initialize tip value at 20%
         tipScroll.progress = INIT_TIP_PERCENT
@@ -54,6 +55,7 @@ class MainActivity : AppCompatActivity() {
             override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
                 Log.i(TAG, currencyList[p2])
                 tvSign.text = currencyList[p2] // Change symbol next to EditText
+                saveData(p2) //Save the index of the selected item to SharedPreference
                 tipAndTotalCalc()
             }
             override fun onNothingSelected(p0: AdapterView<*>?) {}
@@ -85,6 +87,18 @@ class MainActivity : AppCompatActivity() {
                 tipAndTotalCalc()
             }
         })
+    }
+
+    private fun saveData(currencyIndex: Int) {
+        val sharedPreferences = getSharedPreferences("MySharedPref", MODE_PRIVATE)
+        val editor = sharedPreferences.edit()
+        editor.putInt("lastCurrency", currencyIndex)
+        editor.apply()
+    }
+
+    private fun loadData(): Int {
+        val sharedPreferences = getSharedPreferences("MySharedPref", MODE_PRIVATE)
+        return sharedPreferences.getInt("lastCurrency", 0)
     }
 
 
