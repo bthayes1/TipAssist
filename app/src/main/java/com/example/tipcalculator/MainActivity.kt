@@ -2,17 +2,14 @@ package com.example.tipcalculator
 
 import android.animation.ArgbEvaluator
 import android.annotation.SuppressLint
-import android.content.res.ColorStateList
-import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
-import android.widget.EditText
-import android.widget.SeekBar
+import android.view.View
+import android.widget.*
 import android.widget.SeekBar.OnSeekBarChangeListener
-import android.widget.TextView
 import androidx.core.content.ContextCompat
 
 private const val TAG = "MainActivity"
@@ -24,7 +21,11 @@ class MainActivity : AppCompatActivity() {
     private lateinit var tvTipAmount: TextView
     private lateinit var tvTotalAmount: TextView
     private lateinit var billAmount: EditText
+    private lateinit var spinner: Spinner
+    private lateinit var tvSign : TextView
+    private var currencyList = listOf("$", "€", "¥", "£")
 
+    @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -34,12 +35,29 @@ class MainActivity : AppCompatActivity() {
         tvTotalAmount = findViewById(R.id.tvTotal)
         billAmount = findViewById(R.id.tvAmountInput)
 
+        tvSign = findViewById(R.id.tvSign)        //The currency symbol next to amounts
+
+        spinner = findViewById(R.id.spinner)      //The dropdown menu
+
+
+        // Setup an array adapter to choose different currencies
+        val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, currencyList)
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        spinner.adapter = adapter
+
         //Initialize tip value at 20%
         tipScroll.progress = INIT_TIP_PERCENT
-        tvTipPercent.text = INIT_TIP_PERCENT.toString()
+        tvTipPercent.text = "$INIT_TIP_PERCENT%"
         setColor(INIT_TIP_PERCENT)
 
-
+        spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
+                Log.i(TAG, currencyList[p2])
+                tvSign.text = currencyList[p2] // Change symbol next to EditText
+                tipAndTotalCalc()
+            }
+            override fun onNothingSelected(p0: AdapterView<*>?) {}
+        }
         tipScroll.setOnSeekBarChangeListener(object : OnSeekBarChangeListener {
             @SuppressLint("SetTextI18n")
             override fun onProgressChanged(p0: SeekBar?, p1: Int, p2: Boolean) {
@@ -49,13 +67,18 @@ class MainActivity : AppCompatActivity() {
                 tvTipPercent.text = "$p1%"
                 tipAndTotalCalc()
             }
+
             //No logic needed for these functions
             override fun onStartTrackingTouch(p0: SeekBar?) {}
             override fun onStopTrackingTouch(p0: SeekBar?) {}
         })
         billAmount.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
-            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+
+            }
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+
+            }
             override fun afterTextChanged(p0: Editable?) {
                 //Changes on edit text are logged and values are calculated
                 Log.i(TAG, "Current Input is: $p0")
@@ -63,6 +86,7 @@ class MainActivity : AppCompatActivity() {
             }
         })
     }
+
 
     private fun setColor(p1: Int) {
         val color = ArgbEvaluator().evaluate(
@@ -82,13 +106,15 @@ class MainActivity : AppCompatActivity() {
             tvTotalAmount.text = ""
             return
         }
+
         //Calculate total and tip amounts
         val billAmt = billAmount.text.toString().toDouble()
         val tipPercent = tipScroll.progress
-        val tipAmt = billAmt *  tipPercent/ 100
+        val tipAmt = billAmt * tipPercent / 100
         val total = tipAmt + billAmt
+
         //Update UI
-        tvTotalAmount.text = "%.2f".format(total)
-        tvTipAmount.text = "%.2f".format(tipAmt)
+        tvTotalAmount.text = spinner.selectedItem.toString() + "%.2f".format(total)
+        tvTipAmount.text = spinner.selectedItem.toString() + "%.2f".format(tipAmt)
     }
 }

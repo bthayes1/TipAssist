@@ -51,11 +51,13 @@
 
     <EditText
         android:id="@+id/tvAmountInput"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="21dp"
+        app:prefixText="Price: "
+        android:layout_width="130dp"
+        android:layout_height="48dp"
+        android:layout_marginStart="28dp"
+        android:layout_marginTop="20dp"
         android:autofillHints=""
+        android:backgroundTint="@color/black"
         android:ems="10"
         android:hint="@string/enter_bill_amount"
         android:importantForAccessibility="no"
@@ -64,8 +66,30 @@
         android:textColorHint="#78909C"
         android:textSize="20sp"
         app:layout_constraintStart_toEndOf="@+id/tvBase"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tvSign"
+        android:layout_width="wrap_content"
+        android:layout_height="38dp"
+        android:paddingStart="10dp"
+        android:paddingTop="6dp"
+        android:paddingEnd="0dp"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@+id/tvAmountInput"
+        app:layout_constraintEnd_toStartOf="@+id/tvAmountInput" />
+
+    <Spinner
+        android:id="@+id/spinner"
+        android:layout_width="wrap_content"
+        android:layout_height="48dp"
+        android:layout_marginTop="20dp"
+        android:background="@android:drawable/btn_dropdown"
+        android:spinnerMode="dropdown"
+        app:layout_constraintStart_toEndOf="@+id/tvAmountInput"
         app:layout_constraintTop_toTopOf="parent"
-        android:backgroundTint="@color/black"/>
+        tools:ignore="SpeakableTextPresentCheck" />
 
     <SeekBar
         android:id="@+id/tipPercentBar"
