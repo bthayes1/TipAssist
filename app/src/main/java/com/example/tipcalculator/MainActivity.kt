@@ -11,7 +11,7 @@ import android.widget.*
 import android.widget.SeekBar.OnSeekBarChangeListener
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
-
+// Finish Splitup feature and Roundup feature
 
 private const val TAG = "MainActivity"
 private const val INIT_TIP_PERCENT = 20
@@ -24,6 +24,11 @@ class MainActivity : AppCompatActivity() {
     private lateinit var billAmount: EditText
     private lateinit var spinner: Spinner
     private lateinit var tvSign : TextView
+    private lateinit var roundUp : Switch
+    private lateinit var splitUp : Switch
+    private lateinit var addParty : Button
+    private lateinit var decParty : Button
+
     private var currencyList = listOf("$", "€", "¥", "£")
 
     @SuppressLint("SetTextI18n")
@@ -35,6 +40,10 @@ class MainActivity : AppCompatActivity() {
         tvTipAmount = findViewById(R.id.tvTipAmount)
         tvTotalAmount = findViewById(R.id.tvTotal)
         billAmount = findViewById(R.id.tvAmountInput)
+        decParty = findViewById(R.id.decParty)
+        addParty = findViewById(R.id.addParty)
+        roundUp = findViewById(R.id.butRound)
+        splitUp = findViewById(R.id.butSplit)
 
         tvSign = findViewById(R.id.tvSign)        //The currency symbol next to amounts
         spinner = findViewById(R.id.spinner)      //The dropdown menu
@@ -87,6 +96,9 @@ class MainActivity : AppCompatActivity() {
                 tipAndTotalCalc()
             }
         })
+        roundUp.setOnClickListener {
+            Toast.makeText(this, "I have been clicked", Toast.LENGTH_SHORT)
+        }
     }
 
     private fun saveData(currencyIndex: Int) {
