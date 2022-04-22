@@ -6,6 +6,16 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
+    <Button
+        android:id="@+id/decParty"
+        android:layout_width="46dp"
+        android:layout_height="39dp"
+        android:visibility="invisible"
+        android:text="@string/minusSign"
+        android:textColor="@color/white"
+        app:layout_constraintStart_toStartOf="@+id/butSplit"
+        app:layout_constraintTop_toBottomOf="@+id/addParty" />
+
     <TextView
         android:id="@+id/tvBase"
         android:layout_width="wrap_content"
@@ -51,11 +61,12 @@
 
     <EditText
         android:id="@+id/tvAmountInput"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="21dp"
+        android:layout_width="130dp"
+        android:layout_height="48dp"
+        android:layout_marginStart="28dp"
+        android:layout_marginTop="20dp"
         android:autofillHints=""
+        android:backgroundTint="@color/black"
         android:ems="10"
         android:hint="@string/enter_bill_amount"
         android:importantForAccessibility="no"
@@ -64,7 +75,31 @@
         android:textColorHint="#78909C"
         android:textSize="20sp"
         app:layout_constraintStart_toEndOf="@+id/tvBase"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:prefixText="Price: " />
+
+    <TextView
+        android:id="@+id/tvSign"
+        android:layout_width="wrap_content"
+        android:layout_height="38dp"
+        android:paddingStart="10dp"
+        android:paddingTop="6dp"
+        android:paddingEnd="0dp"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@+id/tvAmountInput"
+        app:layout_constraintEnd_toStartOf="@+id/tvAmountInput" />
+
+    <Spinner
+        android:id="@+id/spinner"
+        android:layout_width="wrap_content"
+        android:layout_height="48dp"
+        android:layout_marginTop="20dp"
+        android:background="@android:drawable/btn_dropdown"
+        android:spinnerMode="dropdown"
+        app:layout_constraintStart_toEndOf="@+id/tvAmountInput"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="SpeakableTextPresentCheck" />
 
     <SeekBar
         android:id="@+id/tipPercentBar"
@@ -72,6 +107,7 @@
         android:layout_height="wrap_content"
         android:max="30"
         android:scrollbarSize="30dp"
+        android:thumbTint="#FF9800"
         app:layout_constraintBottom_toBottomOf="@+id/tvTipPercent"
         app:layout_constraintStart_toStartOf="@+id/tvAmountInput"
         app:layout_constraintTop_toTopOf="@+id/tvTipPercent" />
@@ -95,5 +131,54 @@
         app:layout_constraintStart_toStartOf="@+id/tvTipAmount"
         app:layout_constraintTop_toTopOf="@+id/tvTotalAmt"
         tools:text="20.00" />
+
+    <androidx.appcompat.widget.SwitchCompat
+        android:id="@+id/butRound"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="52dp"
+        android:layout_marginTop="18dp"
+        android:minHeight="48dp"
+        android:text="@string/round_up"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvTotalAmt" />
+
+    <androidx.appcompat.widget.SwitchCompat
+        android:id="@+id/butSplit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="100dp"
+        android:minHeight="48dp"
+        android:text="@string/split_bill"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@+id/butRound"
+        app:layout_constraintStart_toEndOf="@+id/butRound"
+        app:layout_constraintTop_toTopOf="@+id/butRound"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <Button
+        android:id="@+id/addParty"
+        android:layout_width="46dp"
+        android:layout_height="39dp"
+        android:clickable="false"
+        android:text="@string/plusSign"
+        android:visibility="invisible"
+        app:layout_constraintStart_toStartOf="@+id/butSplit"
+        app:layout_constraintTop_toBottomOf="@+id/butSplit" />
+
+    <TextView
+        android:id="@+id/partySize"
+        android:layout_width="35dp"
+        android:layout_height="29dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="24dp"
+        android:outlineProvider="bounds"
+        android:textAlignment="center"
+        android:textStyle="bold"
+        app:layout_constraintStart_toEndOf="@+id/addParty"
+        app:layout_constraintTop_toBottomOf="@+id/butSplit"
+        tools:text="10"
+        android:visibility="invisible"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

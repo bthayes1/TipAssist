@@ -1,19 +1,25 @@
 package com.example.tipcalculator
 
+import android.animation.ArgbEvaluator
 import android.annotation.SuppressLint
-import android.graphics.Color
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
-import android.widget.EditText
-import android.widget.SeekBar
+import android.view.View
+import android.widget.*
 import android.widget.SeekBar.OnSeekBarChangeListener
-import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
+import androidx.core.view.isVisible
+import java.math.RoundingMode
+import java.text.DecimalFormat
+
+// Finish Splitup feature and Roundup feature
 
 private const val TAG = "MainActivity"
-private const val INIT_TIP_PERCENT = 15
+private const val INIT_TIP_PERCENT = 20
+private const val INIT_PARTY_SIZE = 1
 
 class MainActivity : AppCompatActivity() {
     private lateinit var tvTipPercent: TextView
@@ -21,7 +27,16 @@ class MainActivity : AppCompatActivity() {
     private lateinit var tvTipAmount: TextView
     private lateinit var tvTotalAmount: TextView
     private lateinit var billAmount: EditText
+    private lateinit var spinner: Spinner
+    private lateinit var tvSign : TextView
+    private lateinit var roundUp : androidx.appcompat.widget.SwitchCompat
+    private lateinit var splitUp : androidx.appcompat.widget.SwitchCompat
+    private lateinit var addParty : Button
+    private lateinit var decParty : Button
+    private lateinit var partySize : TextView
+    private val currencyList = listOf("$", "€", "¥", "£")
 
+    @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -30,33 +45,120 @@ class MainActivity : AppCompatActivity() {
         tvTipAmount = findViewById(R.id.tvTipAmount)
         tvTotalAmount = findViewById(R.id.tvTotal)
         billAmount = findViewById(R.id.tvAmountInput)
+        decParty = findViewById(R.id.decParty)
+        addParty = findViewById(R.id.addParty)
+        roundUp = findViewById(R.id.butRound)
+        splitUp = findViewById(R.id.butSplit)
+        partySize = findViewById(R.id.partySize)
 
-        //Initialize tip value at 15%
+        tvSign = findViewById(R.id.tvSign)        //The currency symbol next to amounts
+        spinner = findViewById(R.id.spinner)      //The dropdown menu
+        val lastCurr = loadData()                 //Load the index value of the last currency
+
+        // Setup an array adapter to choose different currencies
+        val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, currencyList)
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        spinner.adapter = adapter
+        spinner.setSelection(lastCurr)
+
+        //Initialize tip value at 20%
         tipScroll.progress = INIT_TIP_PERCENT
-        tvTipPercent.text = INIT_TIP_PERCENT.toString()
+        tvTipPercent.text = "$INIT_TIP_PERCENT%"
+        setColor(INIT_TIP_PERCENT)
 
+        var numberInParty = INIT_PARTY_SIZE
+        partySize.text = numberInParty.toString()
 
+        spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
+                Log.i(TAG, currencyList[p2])
+                tvSign.text = currencyList[p2] // Change symbol next to EditText
+                saveData(p2) //Save the index of the selected item to SharedPreference
+                tipAndTotalCalc()
+            }
+            override fun onNothingSelected(p0: AdapterView<*>?) {}
+        }
         tipScroll.setOnSeekBarChangeListener(object : OnSeekBarChangeListener {
             @SuppressLint("SetTextI18n")
             override fun onProgressChanged(p0: SeekBar?, p1: Int, p2: Boolean) {
                 //When change occurs on scrollbar, info is logged, and values are calculated
                 Log.i(TAG, "Current Progress is: $p1")
+                setColor(p1)
                 tvTipPercent.text = "$p1%"
                 tipAndTotalCalc()
             }
+
             //No logic needed for these functions
             override fun onStartTrackingTouch(p0: SeekBar?) {}
             override fun onStopTrackingTouch(p0: SeekBar?) {}
         })
         billAmount.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
-            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+
+            }
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+
+            }
             override fun afterTextChanged(p0: Editable?) {
                 //Changes on edit text are logged and values are calculated
                 Log.i(TAG, "Current Input is: $p0")
                 tipAndTotalCalc()
             }
         })
+        roundUp.setOnClickListener {
+            tipAndTotalCalc()
+        }
+        splitUp.setOnClickListener {
+            when (splitUp.isChecked) {
+                true -> {
+                    addParty.isVisible = true
+                    decParty.isVisible = true
+                    partySize.isVisible = true
+                }
+                else -> {
+                    addParty.isVisible = false
+                    decParty.isVisible = false
+                    partySize.isVisible = false
+                    partySize.text = INIT_PARTY_SIZE.toString()
+                    numberInParty = INIT_PARTY_SIZE
+                    tipAndTotalCalc()
+                }
+            }
+        }
+        addParty.setOnClickListener {
+             numberInParty++
+             partySize.text = numberInParty.toString()
+             tipAndTotalCalc()
+        }
+        decParty.setOnClickListener {
+             if (numberInParty > 1 ) {
+                 numberInParty--
+                 partySize.text = numberInParty.toString()
+                 tipAndTotalCalc()
+             } else {
+                 Toast.makeText(this, "Unable to Perform Action", Toast.LENGTH_SHORT).show()
+             }
+        }
+    }
+    private fun saveData(currencyIndex: Int) {
+        val sharedPreferences = getSharedPreferences("MySharedPref", MODE_PRIVATE)
+        val editor = sharedPreferences.edit()
+        editor.putInt("lastCurrency", currencyIndex)
+        editor.apply()
+    }
+    private fun loadData(): Int {
+        val sharedPreferences = getSharedPreferences("MySharedPref", MODE_PRIVATE)
+        return sharedPreferences.getInt("lastCurrency", 0)
+    }
+    private fun setColor(p1: Int) {
+        //Change the color of the tip percent scroll bar from red to green depending on tip percent
+        val color = ArgbEvaluator().evaluate(
+            p1.toFloat() / tipScroll.max,
+            ContextCompat.getColor(this, R.color.color_best_tip),
+            ContextCompat.getColor(this, R.color.color_worst_tip)
+        ) as Int
+        tipScroll.thumb.setTint(color)
+        tipScroll.progressDrawable.setTint(color)
     }
 
     @SuppressLint("SetTextI18n")
@@ -67,13 +169,22 @@ class MainActivity : AppCompatActivity() {
             tvTotalAmount.text = ""
             return
         }
-        //Calculate total and tip amounts
-        val billAmt = billAmount.text.toString().toDouble()
+        val billAmt = billAmount.text.toString().toDouble() / partySize.text.toString().toInt()
         val tipPercent = tipScroll.progress
-        val tipAmt = billAmt *  tipPercent/ 100
-        val total = tipAmt + billAmt
+        val df = DecimalFormat("0")
+        df.roundingMode = RoundingMode.UP
+        val initTip = billAmt * tipPercent / 100
+
+        //Calculate total and tip amounts
+        val tipAmt = when (roundUp.isChecked){
+            true -> df.format(initTip).toDouble()
+            false -> initTip
+        }
+        val total = billAmt + tipAmt
+
         //Update UI
-        tvTotalAmount.text = "%.2f".format(total)
-        tvTipAmount.text = "%.2f".format(tipAmt)
+        tvTipAmount.text = spinner.selectedItem.toString() + "%.2f".format(tipAmt)
+        tvTotalAmount.text = spinner.selectedItem.toString() + "%.2f".format(total)
+
     }
 }

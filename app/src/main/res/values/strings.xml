@@ -3,6 +3,10 @@
     <string name="bill_amount">Bill Amount:</string>
     <string name="tip_total">Tip Total:</string>
     <string name="total_amount">Total Amount:</string>
-    <string name="enter_bill_amount">Enter Bill Amount</string>
+    <string name="enter_bill_amount">Bill Amount</string>
     <string name="_0">%0</string>
+    <string name="round_up">Round Up</string>
+    <string name="split_bill">Split Bill?</string>
+    <string name="minusSign">-</string>
+    <string name="plusSign">+</string>
 </resources>
