@@ -11,10 +11,15 @@ import android.widget.*
 import android.widget.SeekBar.OnSeekBarChangeListener
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import androidx.core.view.isVisible
+import java.math.RoundingMode
+import java.text.DecimalFormat
+
 // Finish Splitup feature and Roundup feature
 
 private const val TAG = "MainActivity"
 private const val INIT_TIP_PERCENT = 20
+private const val INIT_PARTY_SIZE = 1
 
 class MainActivity : AppCompatActivity() {
     private lateinit var tvTipPercent: TextView
@@ -24,12 +29,12 @@ class MainActivity : AppCompatActivity() {
     private lateinit var billAmount: EditText
     private lateinit var spinner: Spinner
     private lateinit var tvSign : TextView
-    private lateinit var roundUp : Switch
-    private lateinit var splitUp : Switch
+    private lateinit var roundUp : androidx.appcompat.widget.SwitchCompat
+    private lateinit var splitUp : androidx.appcompat.widget.SwitchCompat
     private lateinit var addParty : Button
     private lateinit var decParty : Button
-
-    private var currencyList = listOf("$", "€", "¥", "£")
+    private lateinit var partySize : TextView
+    private val currencyList = listOf("$", "€", "¥", "£")
 
     @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -44,6 +49,7 @@ class MainActivity : AppCompatActivity() {
         addParty = findViewById(R.id.addParty)
         roundUp = findViewById(R.id.butRound)
         splitUp = findViewById(R.id.butSplit)
+        partySize = findViewById(R.id.partySize)
 
         tvSign = findViewById(R.id.tvSign)        //The currency symbol next to amounts
         spinner = findViewById(R.id.spinner)      //The dropdown menu
@@ -59,6 +65,9 @@ class MainActivity : AppCompatActivity() {
         tipScroll.progress = INIT_TIP_PERCENT
         tvTipPercent.text = "$INIT_TIP_PERCENT%"
         setColor(INIT_TIP_PERCENT)
+
+        var numberInParty = INIT_PARTY_SIZE
+        partySize.text = numberInParty.toString()
 
         spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
@@ -97,24 +106,52 @@ class MainActivity : AppCompatActivity() {
             }
         })
         roundUp.setOnClickListener {
-            Toast.makeText(this, "I have been clicked", Toast.LENGTH_SHORT)
+            tipAndTotalCalc()
+        }
+        splitUp.setOnClickListener {
+            when (splitUp.isChecked) {
+                true -> {
+                    addParty.isVisible = true
+                    decParty.isVisible = true
+                    partySize.isVisible = true
+                }
+                else -> {
+                    addParty.isVisible = false
+                    decParty.isVisible = false
+                    partySize.isVisible = false
+                    partySize.text = INIT_PARTY_SIZE.toString()
+                    numberInParty = INIT_PARTY_SIZE
+                    tipAndTotalCalc()
+                }
+            }
+        }
+        addParty.setOnClickListener {
+             numberInParty++
+             partySize.text = numberInParty.toString()
+             tipAndTotalCalc()
+        }
+        decParty.setOnClickListener {
+             if (numberInParty > 1 ) {
+                 numberInParty--
+                 partySize.text = numberInParty.toString()
+                 tipAndTotalCalc()
+             } else {
+                 Toast.makeText(this, "Unable to Perform Action", Toast.LENGTH_SHORT).show()
+             }
         }
     }
-
     private fun saveData(currencyIndex: Int) {
         val sharedPreferences = getSharedPreferences("MySharedPref", MODE_PRIVATE)
         val editor = sharedPreferences.edit()
         editor.putInt("lastCurrency", currencyIndex)
         editor.apply()
     }
-
     private fun loadData(): Int {
         val sharedPreferences = getSharedPreferences("MySharedPref", MODE_PRIVATE)
         return sharedPreferences.getInt("lastCurrency", 0)
     }
-
-
     private fun setColor(p1: Int) {
+        //Change the color of the tip percent scroll bar from red to green depending on tip percent
         val color = ArgbEvaluator().evaluate(
             p1.toFloat() / tipScroll.max,
             ContextCompat.getColor(this, R.color.color_best_tip),
@@ -132,15 +169,22 @@ class MainActivity : AppCompatActivity() {
             tvTotalAmount.text = ""
             return
         }
+        val billAmt = billAmount.text.toString().toDouble() / partySize.text.toString().toInt()
+        val tipPercent = tipScroll.progress
+        val df = DecimalFormat("0")
+        df.roundingMode = RoundingMode.UP
+        val initTip = billAmt * tipPercent / 100
 
         //Calculate total and tip amounts
-        val billAmt = billAmount.text.toString().toDouble()
-        val tipPercent = tipScroll.progress
-        val tipAmt = billAmt * tipPercent / 100
-        val total = tipAmt + billAmt
+        val tipAmt = when (roundUp.isChecked){
+            true -> df.format(initTip).toDouble()
+            false -> initTip
+        }
+        val total = billAmt + tipAmt
 
         //Update UI
-        tvTotalAmount.text = spinner.selectedItem.toString() + "%.2f".format(total)
         tvTipAmount.text = spinner.selectedItem.toString() + "%.2f".format(tipAmt)
+        tvTotalAmount.text = spinner.selectedItem.toString() + "%.2f".format(total)
+
     }
 }

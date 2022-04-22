@@ -10,9 +10,9 @@
         android:id="@+id/decParty"
         android:layout_width="46dp"
         android:layout_height="39dp"
-        android:clickable="false"
-        android:text="-"
-        android:textColor="#6D4C41"
+        android:visibility="invisible"
+        android:text="@string/minusSign"
+        android:textColor="@color/white"
         app:layout_constraintStart_toStartOf="@+id/butSplit"
         app:layout_constraintTop_toBottomOf="@+id/addParty" />
 
@@ -132,23 +132,25 @@
         app:layout_constraintTop_toTopOf="@+id/tvTotalAmt"
         tools:text="20.00" />
 
-    <Switch
+    <androidx.appcompat.widget.SwitchCompat
         android:id="@+id/butRound"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="52dp"
         android:layout_marginTop="18dp"
-        android:text="Round Up"
+        android:minHeight="48dp"
+        android:text="@string/round_up"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tvTotalAmt" />
 
-    <Switch
+    <androidx.appcompat.widget.SwitchCompat
         android:id="@+id/butSplit"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="100dp"
-        android:text="Split Bill?"
+        android:minHeight="48dp"
+        android:text="@string/split_bill"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="@+id/butRound"
         app:layout_constraintStart_toEndOf="@+id/butRound"
@@ -160,20 +162,23 @@
         android:layout_width="46dp"
         android:layout_height="39dp"
         android:clickable="false"
-        android:text="+"
+        android:text="@string/plusSign"
+        android:visibility="invisible"
         app:layout_constraintStart_toStartOf="@+id/butSplit"
         app:layout_constraintTop_toBottomOf="@+id/butSplit" />
 
     <TextView
-        android:id="@+id/textView6"
+        android:id="@+id/partySize"
         android:layout_width="35dp"
         android:layout_height="29dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="24dp"
+        android:outlineProvider="bounds"
         android:textAlignment="center"
         android:textStyle="bold"
         app:layout_constraintStart_toEndOf="@+id/addParty"
         app:layout_constraintTop_toBottomOf="@+id/butSplit"
-        tools:text="10" />
+        tools:text="10"
+        android:visibility="invisible"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
