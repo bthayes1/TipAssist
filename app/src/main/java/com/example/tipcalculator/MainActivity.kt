@@ -28,7 +28,6 @@ class MainActivity : AppCompatActivity() {
     private lateinit var tvTotalAmount: TextView
     private lateinit var billAmount: EditText
     private lateinit var spinner: Spinner
-    private lateinit var tvSign : TextView
     private lateinit var roundUp : androidx.appcompat.widget.SwitchCompat
     private lateinit var splitUp : androidx.appcompat.widget.SwitchCompat
     private lateinit var addParty : Button
