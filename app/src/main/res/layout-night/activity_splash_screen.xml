@@ -5,13 +5,15 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/background"
+    android:id="@+id/splashConstraint"
+    android:background="@drawable/gradientanim"
     tools:context=".SplashScreen">
 
     <ImageView
         android:id="@+id/SplashScreenImage"
         android:layout_width="365dp"
         android:layout_height="408dp"
+        android:background="#00FFFFFF"
         android:src="@drawable/nighticon"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
