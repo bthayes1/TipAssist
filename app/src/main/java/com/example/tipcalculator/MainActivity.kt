@@ -105,15 +105,14 @@ class MainActivity : AppCompatActivity() {
             }
         })
         roundUp.setOnClickListener {
-            if (roundUp.isChecked){
-                roundUp.trackDrawable.setTint(Color.parseColor("#378AF0"))
-            }
-            else{
-                roundUp.trackDrawable.setTint(Color.LTGRAY)
-            }
+            // If button is selected, the colors will change to midLight
+            if (roundUp.isChecked) roundUp.trackDrawable.setTint(Color.parseColor("#378AF0"))
+            else roundUp.trackDrawable.setTint(Color.LTGRAY)
             tipAndTotalCalc()
         }
         splitUp.setOnClickListener {
+            // If button is selected, the colors will change to midLight and the decrease and increase
+            // will begin to change party #
             when (splitUp.isChecked) {
                 true -> {
                     addParty.setBackgroundColor(Color.parseColor("#378AF0"))
@@ -154,7 +153,9 @@ class MainActivity : AppCompatActivity() {
         editor.putInt("lastCurrency", currencyIndex)
         editor.apply()
     }
+
     private fun loadData(): Int {
+        //Make this universal to all data types
         val sharedPreferences = getSharedPreferences("MySharedPref", MODE_PRIVATE)
         return sharedPreferences.getInt("lastCurrency", 0)
     }
@@ -179,6 +180,8 @@ class MainActivity : AppCompatActivity() {
         }
         val billAmt = billAmount.text.toString().toDouble() / partySize.text.toString().toInt()
         val tipPercent = tipScroll.progress
+
+        // Initialize format that roundUp will round amount to
         val df = DecimalFormat("0")
         df.roundingMode = RoundingMode.UP
         val initTip = billAmt * tipPercent / 100

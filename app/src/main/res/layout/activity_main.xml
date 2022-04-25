@@ -29,7 +29,6 @@
         android:textSize="24sp"
         android:typeface="normal"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tipPercentBar" />
 
@@ -40,7 +39,6 @@
         android:fontFamily="sans-serif-light"
         android:textColor="@color/mid_light"
         android:textSize="30sp"
-
         app:layout_constraintBottom_toBottomOf="@+id/tvTipTotal"
         app:layout_constraintEnd_toEndOf="@+id/tipPercentBar"
         app:layout_constraintTop_toTopOf="@+id/tvTipTotal"
@@ -52,9 +50,6 @@
         android:layout_height="wrap_content"
         android:fontFamily="sans-serif-light"
         android:textColor="@color/mid_dark"
-        android:textColorHighlight="@color/mid_dark"
-        android:textColorHint="@color/mid_dark"
-        android:textColorLink="@color/mid_dark"
         android:textSize="34sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="@+id/tvTotalAmt"
@@ -70,9 +65,6 @@
         android:fontFamily="sans-serif-light"
         android:text="@string/total_amount"
         android:textColor="@color/mid_dark"
-        android:textColorHighlight="@color/mid_dark"
-        android:textColorHint="@color/mid_dark"
-        android:textColorLink="@color/mid_dark"
         android:textSize="24sp"
         app:layout_constraintStart_toStartOf="@+id/tvTipTotal"
         app:layout_constraintTop_toBottomOf="@+id/tvTipTotal" />
