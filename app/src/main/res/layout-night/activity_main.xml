@@ -82,13 +82,13 @@
         style="@style/Widget.AppCompat.Light.AutoCompleteTextView"
         android:layout_width="243dp"
         android:layout_height="61dp"
-        android:autofillHints=""
         android:backgroundTint="@color/mid_light"
         android:ems="10"
         android:fontFamily="sans-serif-light"
         android:hint="@string/enter_bill_amount"
         android:importantForAccessibility="no"
         android:inputType="numberDecimal"
+        android:maxLength="8"
         android:minHeight="48dp"
         android:textAlignment="center"
         android:textColor="@color/mid_light"
@@ -98,8 +98,8 @@
         app:layout_constraintBottom_toBottomOf="@+id/spinner"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/spinner"
-        app:prefixText="Price: "
-        tools:ignore="TextContrastCheck" />
+        tools:ignore="TextContrastCheck"
+        android:importantForAutofill="no" />
 
     <Spinner
         android:id="@+id/spinner"
