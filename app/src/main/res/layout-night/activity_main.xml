@@ -232,6 +232,6 @@
         android:contentDescription="@string/tip_assist_logo"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:srcCompat="@drawable/icon" />
+        app:srcCompat="@drawable/nighticon"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

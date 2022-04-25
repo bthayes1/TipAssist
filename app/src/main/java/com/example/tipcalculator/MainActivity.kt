@@ -2,6 +2,7 @@ package com.example.tipcalculator
 
 import android.animation.ArgbEvaluator
 import android.annotation.SuppressLint
+import android.graphics.Color
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -11,7 +12,6 @@ import android.widget.*
 import android.widget.SeekBar.OnSeekBarChangeListener
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
-import androidx.core.view.isVisible
 import java.math.RoundingMode
 import java.text.DecimalFormat
 
@@ -28,7 +28,6 @@ class MainActivity : AppCompatActivity() {
     private lateinit var tvTotalAmount: TextView
     private lateinit var billAmount: EditText
     private lateinit var spinner: Spinner
-    private lateinit var tvSign : TextView
     private lateinit var roundUp : androidx.appcompat.widget.SwitchCompat
     private lateinit var splitUp : androidx.appcompat.widget.SwitchCompat
     private lateinit var addParty : Button
@@ -39,6 +38,7 @@ class MainActivity : AppCompatActivity() {
     @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        supportActionBar?.hide()
         setContentView(R.layout.activity_main)
         tvTipPercent = findViewById(R.id.tvTipPercent)
         tipScroll = findViewById(R.id.tipPercentBar)
@@ -51,7 +51,12 @@ class MainActivity : AppCompatActivity() {
         splitUp = findViewById(R.id.butSplit)
         partySize = findViewById(R.id.partySize)
 
-        tvSign = findViewById(R.id.tvSign)        //The currency symbol next to amounts
+        addParty.setBackgroundColor(Color.LTGRAY)
+        decParty.setBackgroundColor(Color.LTGRAY)
+        partySize.setTextColor(Color.LTGRAY)
+
+
+
         spinner = findViewById(R.id.spinner)      //The dropdown menu
         val lastCurr = loadData()                 //Load the index value of the last currency
 
@@ -72,7 +77,6 @@ class MainActivity : AppCompatActivity() {
         spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
                 Log.i(TAG, currencyList[p2])
-                tvSign.text = currencyList[p2] // Change symbol next to EditText
                 saveData(p2) //Save the index of the selected item to SharedPreference
                 tipAndTotalCalc()
             }
@@ -95,30 +99,36 @@ class MainActivity : AppCompatActivity() {
         billAmount.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
 
+
             }
             override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-
             }
             override fun afterTextChanged(p0: Editable?) {
                 //Changes on edit text are logged and values are calculated
-                Log.i(TAG, "Current Input is: $p0")
                 tipAndTotalCalc()
             }
         })
         roundUp.setOnClickListener {
+            if (roundUp.isChecked){
+                roundUp.trackDrawable.setTint(Color.parseColor("#378AF0"))
+            }
+            else{
+                roundUp.trackDrawable.setTint(Color.LTGRAY)
+            }
             tipAndTotalCalc()
         }
         splitUp.setOnClickListener {
             when (splitUp.isChecked) {
                 true -> {
-                    addParty.isVisible = true
-                    decParty.isVisible = true
-                    partySize.isVisible = true
+                    addParty.setBackgroundColor(Color.parseColor("#378AF0"))
+                    decParty.setBackgroundColor(Color.parseColor("#378AF0"))
+                    splitUp.trackDrawable.setTint(Color.parseColor("#378AF0"))
+
                 }
                 else -> {
-                    addParty.isVisible = false
-                    decParty.isVisible = false
-                    partySize.isVisible = false
+                    addParty.setBackgroundColor(Color.LTGRAY)
+                    decParty.setBackgroundColor(Color.LTGRAY)
+                    splitUp.trackDrawable.setTint(Color.LTGRAY)
                     partySize.text = INIT_PARTY_SIZE.toString()
                     numberInParty = INIT_PARTY_SIZE
                     tipAndTotalCalc()
@@ -126,12 +136,14 @@ class MainActivity : AppCompatActivity() {
             }
         }
         addParty.setOnClickListener {
-             numberInParty++
-             partySize.text = numberInParty.toString()
-             tipAndTotalCalc()
+            if (splitUp.isChecked) {
+                numberInParty++
+                partySize.text = numberInParty.toString()
+                tipAndTotalCalc()
+            }
         }
         decParty.setOnClickListener {
-             if (numberInParty > 1 ) {
+             if (numberInParty > 1 && splitUp.isChecked ) {
                  numberInParty--
                  partySize.text = numberInParty.toString()
                  tipAndTotalCalc()

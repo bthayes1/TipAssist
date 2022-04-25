@@ -1,14 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="darker">#2B5C55</color>
-    <color name="darkest">#006152</color>
-    <color name="mid_dark">#4FA89B</color>
-    <color name="mid_light">#67DBCA</color>
-    <color name="light">#ADE1D9</color>
+    <color name="darkest">@color/mid_light</color>
+    <color name="darker">#2865B0</color>
+    <color name="mid_dark">#317BD6</color>
+<color name="mid_light">#378AF0</color>
+    <color name="light">#A7BCD6</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="color_worst_tip">#14F802</color>
     <color name="color_best_tip">#dc1e0b</color>
+    <color name="background">#FFFFFFFF</color>
 
 
 </resources>
