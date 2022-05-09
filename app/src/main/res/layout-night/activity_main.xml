@@ -20,7 +20,7 @@
 
     <TextView
         android:id="@+id/tvTipPercent"
-        android:layout_width="46dp"
+        android:layout_width="wrap_content"
         android:layout_height="36dp"
         android:fontFamily="sans-serif-light"
         android:text="@string/_0"
@@ -51,7 +51,6 @@
         android:fontFamily="sans-serif-light"
         android:textColor="@color/mid_dark"
         android:textSize="34sp"
-        android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="@+id/tvTotalAmt"
         app:layout_constraintEnd_toEndOf="@+id/tvTipAmount"
         app:layout_constraintTop_toTopOf="@+id/tvTotalAmt"
@@ -73,11 +72,12 @@
         android:id="@+id/tvAmountInput"
         style="@style/Widget.AppCompat.Light.AutoCompleteTextView"
         android:layout_width="243dp"
-        android:layout_height="61dp"
+        android:layout_height="wrap_content"
         android:backgroundTint="@color/mid_light"
         android:fontFamily="sans-serif-light"
         android:hint="@string/enter_bill_amount"
         android:importantForAccessibility="no"
+        android:importantForAutofill="no"
         android:inputType="numberDecimal"
         android:maxLength="8"
         android:minHeight="48dp"
@@ -89,8 +89,7 @@
         app:layout_constraintBottom_toBottomOf="@+id/spinner"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/spinner"
-        tools:ignore="TextContrastCheck"
-        android:importantForAutofill="no" />
+        tools:ignore="TextContrastCheck" />
 
     <Spinner
         android:id="@+id/spinner"
@@ -113,7 +112,6 @@
         android:layout_marginTop="64dp"
         android:max="30"
         android:scrollbarSize="30dp"
-        android:thumbTint="#FF9800"
         app:layout_constraintEnd_toEndOf="@+id/tvAmountInput"
         app:layout_constraintStart_toStartOf="@+id/spinner"
         app:layout_constraintTop_toBottomOf="@+id/tvAmountInput" />
@@ -220,9 +218,13 @@
         android:id="@+id/imageView"
         android:layout_width="146dp"
         android:layout_height="143dp"
+        android:layout_marginBottom="112dp"
+        android:background="#00FFFFFF"
         android:contentDescription="@string/tip_assist_logo"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/tipPercentBar"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.501"
         app:layout_constraintStart_toStartOf="parent"
-        app:srcCompat="@drawable/nighticon"/>
+        app:srcCompat="@drawable/nighticon"  />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
