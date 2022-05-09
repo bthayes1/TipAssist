@@ -27,7 +27,6 @@
         android:textAlignment="center"
         android:textColor="@color/mid_light"
         android:textSize="24sp"
-        android:typeface="normal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tipPercentBar" />
@@ -79,16 +78,13 @@
         android:importantForAutofill="no"
         android:inputType="numberDecimal"
         android:maxLength="8"
-        android:minHeight="48dp"
         android:textAlignment="center"
         android:textColor="@color/mid_light"
-        android:textColorHighlight="@color/mid_dark"
-        android:textColorHint="#C3C2C1"
+        android:textColorHint="@color/disabled"
         android:textSize="34sp"
         app:layout_constraintBottom_toBottomOf="@+id/spinner"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/spinner"
-        app:prefixText="Price: "
         tools:ignore="TextContrastCheck" />
 
     <Spinner
@@ -129,7 +125,7 @@
         app:layout_constraintEnd_toEndOf="@+id/tvTotal"
         app:layout_constraintTop_toTopOf="@+id/butRound"
         app:thumbTint="#E1E5E6"
-        app:trackTint="#BDBFC1"
+        app:trackTint="@color/disabled"
         tools:ignore="TextContrastCheck" />
 
     <androidx.appcompat.widget.SwitchCompat
@@ -146,7 +142,7 @@
         app:layout_constraintStart_toStartOf="@+id/tvTotalAmt"
         app:layout_constraintTop_toBottomOf="@+id/tvTotalAmt"
         app:thumbTint="#E1E5E6"
-        app:trackTint="#BDBFC1"
+        app:trackTint="@color/disabled"
         tools:ignore="TextContrastCheck" />
 
     <Button
@@ -154,7 +150,7 @@
         android:layout_width="48dp"
         android:layout_height="48dp"
         android:layout_marginStart="16dp"
-        android:backgroundTint="@android:color/darker_gray"
+        android:backgroundTint="@color/disabled"
         android:text="@string/plusSign"
         android:textColor="@color/white"
         app:layout_constraintBottom_toBottomOf="@+id/partySize"
@@ -167,7 +163,7 @@
         android:layout_width="48dp"
         android:layout_height="48dp"
         android:layout_marginEnd="16dp"
-        android:backgroundTint="@android:color/darker_gray"
+        android:backgroundTint="@color/disabled"
         android:text="@string/minusSign"
         android:textAlignment="center"
         android:textColor="@color/white"
@@ -186,7 +182,7 @@
         android:fontFamily="sans-serif-light"
         android:outlineProvider="bounds"
         android:textAlignment="center"
-        android:textColor="@android:color/darker_gray"
+        android:textColor="@color/disabled"
         android:textSize="20sp"
         android:textStyle="bold"
         android:visibility="visible"

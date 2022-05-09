@@ -10,5 +10,8 @@
     <color name="color_worst_tip">#98F191</color>
     <color name="color_best_tip">#FA8074</color>
     <color name="background">#202020</color>
+    <color name="disabled">#616161</color>
+    <color name="enabled">#BCBCBF</color>
+    <color name="enabledtext">#BCBCBF</color>
 
 </resources>
