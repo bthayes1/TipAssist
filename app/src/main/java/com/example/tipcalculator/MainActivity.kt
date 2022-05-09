@@ -2,7 +2,6 @@ package com.example.tipcalculator
 
 import android.animation.ArgbEvaluator
 import android.annotation.SuppressLint
-import android.graphics.Color
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -51,11 +50,10 @@ class MainActivity : AppCompatActivity() {
         splitUp = findViewById(R.id.butSplit)
         partySize = findViewById(R.id.partySize)
 
-        addParty.setBackgroundColor(Color.LTGRAY)
-        decParty.setBackgroundColor(Color.LTGRAY)
-        partySize.setTextColor(Color.LTGRAY)
-
-
+        // Colors to use to change whether components are enabled.
+        val disabled = ContextCompat.getColor(this, R.color.disabled)
+        val enabled = ContextCompat.getColor(this, R.color.enabled)
+        val enabledText = ContextCompat.getColor(this, R.color.enabledtext)
 
         spinner = findViewById(R.id.spinner)      //The dropdown menu
         val lastCurr = loadData()                 //Load the index value of the last currency
@@ -97,38 +95,38 @@ class MainActivity : AppCompatActivity() {
             override fun onStopTrackingTouch(p0: SeekBar?) {}
         })
         billAmount.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-
-
-            }
-            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-            }
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
             override fun afterTextChanged(p0: Editable?) {
                 //Changes on edit text are logged and values are calculated
                 tipAndTotalCalc()
             }
         })
         roundUp.setOnClickListener {
-            if (roundUp.isChecked){
-                roundUp.trackDrawable.setTint(Color.parseColor("#378AF0"))
-            }
-            else{
-                roundUp.trackDrawable.setTint(Color.LTGRAY)
-            }
+            if (roundUp.isChecked) roundUp.trackDrawable.setTint(enabled)
+            else roundUp.trackDrawable.setTint(disabled)
             tipAndTotalCalc()
         }
         splitUp.setOnClickListener {
+            // If button is selected, the colors will change to midLight and the decrease and increase
+            // will begin to change party #
             when (splitUp.isChecked) {
                 true -> {
-                    addParty.setBackgroundColor(Color.parseColor("#378AF0"))
-                    decParty.setBackgroundColor(Color.parseColor("#378AF0"))
-                    splitUp.trackDrawable.setTint(Color.parseColor("#378AF0"))
+                    addParty.setBackgroundColor(enabled)
+                    decParty.setBackgroundColor(enabled)
+                    splitUp.trackDrawable.setTint(enabled)
+                    partySize.setTextColor(enabledText)
+                    addParty.isClickable = true
+                    decParty.isClickable = true
 
                 }
                 else -> {
-                    addParty.setBackgroundColor(Color.LTGRAY)
-                    decParty.setBackgroundColor(Color.LTGRAY)
-                    splitUp.trackDrawable.setTint(Color.LTGRAY)
+                    addParty.setBackgroundColor(disabled)
+                    decParty.setBackgroundColor(disabled)
+                    splitUp.trackDrawable.setTint(disabled)
+                    partySize.setTextColor(disabled)
+                    addParty.isClickable = false
+                    decParty.isClickable = false
                     partySize.text = INIT_PARTY_SIZE.toString()
                     numberInParty = INIT_PARTY_SIZE
                     tipAndTotalCalc()
@@ -158,6 +156,7 @@ class MainActivity : AppCompatActivity() {
         editor.putInt("lastCurrency", currencyIndex)
         editor.apply()
     }
+
     private fun loadData(): Int {
         val sharedPreferences = getSharedPreferences("MySharedPref", MODE_PRIVATE)
         return sharedPreferences.getInt("lastCurrency", 0)
@@ -183,6 +182,8 @@ class MainActivity : AppCompatActivity() {
         }
         val billAmt = billAmount.text.toString().toDouble() / partySize.text.toString().toInt()
         val tipPercent = tipScroll.progress
+
+        // Initialize format that roundUp will round amount to
         val df = DecimalFormat("0")
         df.roundingMode = RoundingMode.UP
         val initTip = billAmt * tipPercent / 100

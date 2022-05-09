@@ -1,6 +1,6 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
-    <style name="Theme.TipCalculator" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+    <style name="Theme.TipCalculator" parent="Theme.MaterialComponents.Light.DarkActionBar">
         <!-- Primary brand color. -->
         <item name="colorPrimary">@color/mid_light</item>
         <item name="colorPrimaryVariant">@color/mid_light</item>
@@ -13,6 +13,7 @@
         <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimary</item>
         <item name="android:background">@color/background</item>
         <!-- Customize your theme here. -->
+        <item name="colorPrimaryDark">@color/mid_light</item>
 
     </style>
 </resources>
