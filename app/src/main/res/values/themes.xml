@@ -1,6 +1,6 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
-    <style name="Theme.TipCalculator" parent="Theme.MaterialComponents.Light.DarkActionBar">
+    <style name="Theme.TipCalculator" parent="Theme.AppCompat.DayNight.NoActionBar">
         <!-- Primary brand color. -->
         <item name="colorPrimary">@color/mid_light</item>
         <item name="colorPrimaryVariant">@color/mid_light</item>
@@ -10,10 +10,11 @@
         <item name="colorSecondaryVariant">@color/darker</item>
         <item name="colorOnSecondary">@color/mid_light</item>
         <!-- Status bar color. -->
-        <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimary</item>
+        <item name="android:statusBarColor" >?attr/colorPrimary</item>
         <item name="android:background">@color/background</item>
         <!-- Customize your theme here. -->
         <item name="colorPrimaryDark">@color/mid_light</item>
+
 
     </style>
 </resources>

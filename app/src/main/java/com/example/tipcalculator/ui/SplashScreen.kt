@@ -1,4 +1,4 @@
-package com.example.tipcalculator
+package com.example.tipcalculator.ui
 
 import android.annotation.SuppressLint
 import android.content.Intent
@@ -10,6 +10,7 @@ import android.view.animation.AnimationUtils
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
+import com.example.tipcalculator.R
 
 @SuppressLint("CustomSplashScreen")
 class SplashScreen : AppCompatActivity() {
