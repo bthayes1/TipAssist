@@ -18,6 +18,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
+import com.cottacush.android.currencyedittext.CurrencyEditText
 import com.example.tipcalculator.R
 import com.example.tipcalculator.databinding.FragmentMainBinding
 import com.example.tipcalculator.ui.MainActivity
@@ -31,6 +32,7 @@ class MainFragment : Fragment() {
     private val mainViewModel: MainViewModel by activityViewModels()
     private val currencyList = listOf("$", "€", "¥", "£")
     private lateinit var fragmentContext: Context
+    private lateinit var currencySelected: String
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -48,25 +50,21 @@ class MainFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        currencySelected = mainViewModel.getCurrencySelected().value ?:
+            throw Exception("Currency Not Loaded when ViewModel Initialized")
         // Colors to use to change whether components are enabled.
         val colorDisabled = ContextCompat.getColor(fragmentContext, R.color.disabled)
         val colorEnabled = ContextCompat.getColor(fragmentContext, R.color.enabled)
-        val colorEnabledText = ContextCompat.getColor(fragmentContext, R.color.enabledtext)
-        val adapter = ArrayAdapter(fragmentContext, android.R.layout.simple_spinner_item, currencyList)
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-//        spinner.adapter = adapter
-//        spinner.setSelection(lastCurr)
-
         binding?.apply {
-            spinner.adapter = adapter
             Log.i(TAG, "${mainViewModel.getCurrencySelected().value}")
-            spinner.setSelection(currencyList.indexOf(mainViewModel.getCurrencySelected().value))
             tipPercentBar.progress = INIT_TIP_PERCENT
             etAmountInput.addTextChangedListener(object : TextWatcher{
                 override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
                 override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
                 override fun afterTextChanged(p0: Editable?) {
-                    mainViewModel.setBillAmount(p0)
+                    val value = etAmountInput.getNumericValue()
+                    Log.i(TAG, "VALUE: $value")
+                    mainViewModel.setBillAmount(value)
                 }
             })
             tipPercentBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
@@ -77,12 +75,10 @@ class MainFragment : Fragment() {
                 override fun onStopTrackingTouch(p0: SeekBar?) {}
             })
             mainViewModel.getColor().observe(viewLifecycleOwner){ color ->
-                Log.i(TAG, "color -> $color")
                 tipPercentBar.thumb.setTint(ContextCompat.getColor(context!!, color))
                 tipPercentBar.progressDrawable.setTint(ContextCompat.getColor(context!!, color))
             }
             mainViewModel.getTipPercent().observe(viewLifecycleOwner){tipPercent ->
-                Log.i(TAG, "tipPercent: $tipPercent")
                 tvTipPercent.text = "%$tipPercent"
                 val color = ArgbEvaluator().evaluate(
                     tipPercent.toFloat() / tipPercentBar.max,
@@ -93,25 +89,21 @@ class MainFragment : Fragment() {
                 tipPercentBar.progressDrawable.setTint(color)
             }
             mainViewModel.getTipAmount().observe(viewLifecycleOwner){tipAmount->
-                Log.i(TAG, "tipAmount: $tipAmount")
-                tvTipAmount.text = if (tipAmount > 0.0) "$" + "%.2f".format(tipAmount) else ""
+                tvTipAmount.text = if (tipAmount > 0.0 ) currencySelected + "%.2f".format(tipAmount) else ""
             }
             mainViewModel.getTotalAmount().observe(viewLifecycleOwner){total->
-                Log.i(TAG, "total: $total")
-                tvTotal.text = if (total > 0) "$" + "%.2f".format(total) else ""
+                tvTotal.text = if (total > 0) currencySelected + "%.2f".format(total) else ""
             }
             mainViewModel.getPartySize().observe(viewLifecycleOwner){size ->
                 tvPartySize.text = size.toString()
             }
             mainViewModel.getSplitUpEnabled().observe(viewLifecycleOwner){isEnabled ->
-                Log.i(TAG, "isEnabled: $isEnabled")
                 when(isEnabled){
                     true -> {
                         btnSplit.trackDrawable.setTint(colorEnabled)
                         groupSlitUp.visibility = View.VISIBLE
                     }
                     false -> {
-                        Log.i(TAG, "isEnabled: set disabled")
                         btnSplit.trackDrawable.setTint(colorDisabled)
                         groupSlitUp.visibility = View.INVISIBLE
                     }
@@ -123,7 +115,11 @@ class MainFragment : Fragment() {
                     false -> btnRound.trackDrawable.setTint(colorDisabled)
                 }
             }
-
+            mainViewModel.getCurrencySelected().observe(viewLifecycleOwner) { currency ->
+                etAmountInput.setCurrencySymbol(currency, false)
+                etAmountInput.setText("")
+                currencySelected = currency
+            }
             btnRound.setOnClickListener {
                 mainViewModel.toggleRoundUp()
             }
@@ -135,13 +131,6 @@ class MainFragment : Fragment() {
             }
             btnDecParty.setOnClickListener{
                 mainViewModel.changePartySize(increment = false)
-            }
-            spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
-                override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
-                    Log.i(TAG, "currency: ${currencyList[p2]}")
-                    //mainViewModel.setCurrency(currencyList[p2])
-                }
-                override fun onNothingSelected(p0: AdapterView<*>?){}
             }
         }
     }

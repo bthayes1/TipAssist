@@ -10,10 +10,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.TipCalculator" >
-        <activity android:name=".ui.MainActivity" />
         <activity
-            android:name=".ui.SplashScreen"
-            android:theme="@style/Theme.TipCalculator"
+            android:name=".ui.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

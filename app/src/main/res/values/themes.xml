@@ -1,4 +1,4 @@
-<resources xmlns:tools="http://schemas.android.com/tools">
+<resources >
     <!-- Base application theme. -->
     <style name="Theme.TipCalculator" parent="Theme.AppCompat.DayNight.NoActionBar">
         <!-- Primary brand color. -->
@@ -14,7 +14,10 @@
         <item name="android:background">@color/background</item>
         <!-- Customize your theme here. -->
         <item name="colorPrimaryDark">@color/mid_light</item>
+        <item name="android:fontFamily"> sans-serif</item>
+    </style>
 
-
+    <style name="splashScreenTheme" parent="Theme.AppCompat.DayNight.NoActionBar">
+        <item name="android:windowBackground">@drawable/splash_screen</item>
     </style>
 </resources>

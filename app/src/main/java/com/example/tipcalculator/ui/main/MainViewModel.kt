@@ -1,7 +1,5 @@
 package com.example.tipcalculator.ui.main
 
-import android.content.Context
-import android.text.Editable
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -10,8 +8,8 @@ import androidx.lifecycle.viewModelScope
 import com.example.tipcalculator.models.UserSettings
 import com.example.tipcalculator.repository.SettingsRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.first
 import java.math.RoundingMode
 import java.text.DecimalFormat
 import javax.inject.Inject
@@ -29,6 +27,8 @@ class MainViewModel@Inject constructor(private val settingsRepository: SettingsR
     private val splitUpEnabled = MutableLiveData<Boolean>()
     private val partySize = MutableLiveData<Int>()
     private val currencySelected = MutableLiveData<String>()
+    private val themeSelected = MutableLiveData<String>()
+    private val df = DecimalFormat("0")
 
     init {
         Log.i(TAG, "MainViewModel initialized...")
@@ -36,9 +36,13 @@ class MainViewModel@Inject constructor(private val settingsRepository: SettingsR
         roundUpEnabled.value = false
         splitUpEnabled.value = false
         partySize.value = INIT_PARTY_SIZE
+
+        //Init format for rounding up
+        df.roundingMode = RoundingMode.UP
         loadSettings()
     }
 
+    // Methods to get read-only versions of MutableLiveData
     fun getTipPercent(): LiveData<Int> = tipPercent
     fun getTipAmount(): LiveData<Double> = tipAmount
     fun getTotalAmount(): LiveData<Double> = totalAmount
@@ -47,83 +51,97 @@ class MainViewModel@Inject constructor(private val settingsRepository: SettingsR
     fun getSplitUpEnabled(): LiveData<Boolean> = splitUpEnabled
     fun getPartySize(): LiveData<Int> = partySize
     fun getCurrencySelected(): LiveData<String> = currencySelected
+    fun getTheme(): LiveData<String> = themeSelected
 
+    //Methods to write new values when changes are made in UI
     fun toggleRoundUp() {
-        roundUpEnabled.value = !roundUpEnabled.value!!
+        val roundUp = getRoundUpEnabled().value
+        require(roundUp != null)
+        roundUpEnabled.value = !roundUp
         calculateTotal()
     }
-
     fun toggleSplitUp() {
         splitUpEnabled.value = !splitUpEnabled.value!!
         calculateTotal()
     }
-
-    fun setBillAmount(p0: Editable?) {
-        billAmt = if (p0.isNullOrEmpty()) 0.0 else p0.toString().toDouble()
+    fun setBillAmount(total: Double) {
+        billAmt = total
         calculateTotal()
-        Log.i(TAG, "billAmt: $billAmt")
     }
-
     fun setTipPercent(percent: Int) {
         tipPercent.value = percent
         calculateTotal()
     }
-
     fun changePartySize(increment: Boolean) {
+        val party = getPartySize().value
+        require(party != null)
         partySize.value =
             when (increment) {
                 true -> {
-                    if (partySize.value == MAX_PARTY_SIZE) return
-                    partySize.value!!.inc()
+                    if (party == MAX_PARTY_SIZE) return
+                    party.inc()
                 }
                 false -> {
-                    if (partySize.value == INIT_PARTY_SIZE) return
-                    partySize.value!!.dec()
+                    if (party == INIT_PARTY_SIZE) return
+                    party.dec()
                 }
             }
         calculateTotal()
     }
-
+    fun setTheme(theme: String) {
+        themeSelected.value = theme
+        saveSettings()
+    }
     fun setCurrency(currency: String){
         currencySelected.value = currency
         saveSettings()
+        calculateTotal() //Must calculate to update currency
     }
 
     private fun calculateTotal() {
-        val df = DecimalFormat("0")
-        df.roundingMode = RoundingMode.UP
+        val tipPercent = getTipPercent().value
+        val roundUp = getRoundUpEnabled().value
+        val splitUp = getSplitUpEnabled().value
+        val partySize = getPartySize().value
 
-        val tipPercent = tipPercent.value!!.toInt()
-        val tip = if (roundUpEnabled.value!!) {
-            df.format(billAmt * tipPercent / 100).toDouble()
+        //If any value to be used in calculation is null, throw error
+        require(tipPercent != null)
+        require(roundUp != null)
+        require(splitUp != null)
+        require(partySize != null)
+
+        val bill = if (splitUp) billAmt/partySize else billAmt
+        val tip = if (roundUp) {
+            df.format(bill * tipPercent / 100).toDouble()
         } else {
-            billAmt * tipPercent / 100
+            bill * tipPercent / 100
         }
-        val total = tip + billAmt
-        if (splitUpEnabled.value!!) {
-            tipAmount.value = tip / partySize.value!!
-            totalAmount.value = total / partySize.value!!
-        } else {
-            tipAmount.value = tip
-            totalAmount.value = total
-        }
+        tipAmount.value = tip
+        totalAmount.value = tip + bill
+
     }
-
-    private fun loadSettings(){
-        viewModelScope.launch(Dispatchers.IO) {
-            settingsRepository.loadSettings().collect { userSettings->
-                Log.i(TAG, "Loaded settings: ${userSettings.currency}")
-                currencySelected.postValue(userSettings.currency)
+    private fun loadSettings() {
+        runBlocking {
+            Log.i(TAG, "blocking...")
+            settingsRepository.loadSettings().first { userSettings ->
+                currencySelected.value = userSettings.currency
+                themeSelected.value = userSettings.theme
+                true
             }
         }
+        Log.i(TAG, "done")
     }
-
     private fun saveSettings(){
-        require(!currencySelected.value.isNullOrEmpty())
+        val userCurrency = getCurrencySelected().value
+        val userTheme = getTheme().value
+        require(!userCurrency.isNullOrEmpty())
+        require(!userTheme.isNullOrEmpty())
         viewModelScope.launch(Dispatchers.IO){
-            Log.i(TAG, "saving settings: ${currencySelected.value}")
             settingsRepository.saveSettings(
-                UserSettings(currency = currencySelected.value!!)// !! because non null currency is required
+                UserSettings(
+                    currency = userCurrency,
+                    theme = userTheme
+                )
             )
         }
     }
