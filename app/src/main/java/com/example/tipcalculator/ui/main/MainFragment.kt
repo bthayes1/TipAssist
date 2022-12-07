@@ -6,22 +6,15 @@ import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.AdapterView
-import android.widget.ArrayAdapter
 import android.widget.SeekBar
-import android.widget.Toast
 import androidx.core.content.ContextCompat
-import androidx.core.view.isVisible
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.viewModels
-import com.cottacush.android.currencyedittext.CurrencyEditText
 import com.example.tipcalculator.R
 import com.example.tipcalculator.databinding.FragmentMainBinding
-import com.example.tipcalculator.ui.MainActivity
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -30,9 +23,8 @@ class MainFragment : Fragment() {
 
     private var binding: FragmentMainBinding? = null
     private val mainViewModel: MainViewModel by activityViewModels()
-    private val currencyList = listOf("$", "€", "¥", "£")
     private lateinit var fragmentContext: Context
-    private lateinit var currencySelected: String
+    private var currencySelected = ""
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -50,13 +42,10 @@ class MainFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        currencySelected = mainViewModel.getCurrencySelected().value ?:
-            throw Exception("Currency Not Loaded when ViewModel Initialized")
         // Colors to use to change whether components are enabled.
         val colorDisabled = ContextCompat.getColor(fragmentContext, R.color.disabled)
         val colorEnabled = ContextCompat.getColor(fragmentContext, R.color.enabled)
         binding?.apply {
-            Log.i(TAG, "${mainViewModel.getCurrencySelected().value}")
             tipPercentBar.progress = INIT_TIP_PERCENT
             etAmountInput.addTextChangedListener(object : TextWatcher{
                 override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
@@ -82,17 +71,17 @@ class MainFragment : Fragment() {
                 tvTipPercent.text = "%$tipPercent"
                 val color = ArgbEvaluator().evaluate(
                     tipPercent.toFloat() / tipPercentBar.max,
-                    ContextCompat.getColor(context!!, R.color.color_best_tip),
-                    ContextCompat.getColor(context!!, R.color.color_worst_tip)
+                    ContextCompat.getColor(fragmentContext, R.color.color_best_tip),
+                    ContextCompat.getColor(fragmentContext, R.color.color_worst_tip)
                 ) as Int
                 tipPercentBar.thumb.setTint(color)
                 tipPercentBar.progressDrawable.setTint(color)
             }
             mainViewModel.getTipAmount().observe(viewLifecycleOwner){tipAmount->
-                tvTipAmount.text = if (tipAmount > 0.0 ) currencySelected + "%.2f".format(tipAmount) else ""
+                tvTipAmount.text = tipAmount
             }
             mainViewModel.getTotalAmount().observe(viewLifecycleOwner){total->
-                tvTotal.text = if (total > 0) currencySelected + "%.2f".format(total) else ""
+                tvTotal.text = total
             }
             mainViewModel.getPartySize().observe(viewLifecycleOwner){size ->
                 tvPartySize.text = size.toString()

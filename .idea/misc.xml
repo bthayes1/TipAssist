@@ -15,12 +15,16 @@
         <entry key="..\:/TipCalculator/app/src/main/res/drawable/gradientbackground2.xml" value="0.2145" />
         <entry key="..\:/TipCalculator/app/src/main/res/drawable/gradientbackground3.xml" value="0.2145" />
         <entry key="..\:/TipCalculator/app/src/main/res/drawable/gradientbackground4.xml" value="0.1765" />
+        <entry key="..\:/TipCalculator/app/src/main/res/drawable/ic_baseline_security_24.xml" value="0.1145" />
+        <entry key="..\:/TipCalculator/app/src/main/res/drawable/ic_icon.xml" value="0.2035" />
         <entry key="..\:/TipCalculator/app/src/main/res/drawable/ic_launcher_background.xml" value="0.1" />
+        <entry key="..\:/TipCalculator/app/src/main/res/drawable/ic_logo.xml" value="0.194" />
+        <entry key="..\:/TipCalculator/app/src/main/res/drawable/ic_nighticon.xml" value="0.2115" />
         <entry key="..\:/TipCalculator/app/src/main/res/drawable/settings_icon.xml" value="0.3675" />
         <entry key="..\:/TipCalculator/app/src/main/res/drawable/splash_screen.xml" value="0.1535" />
         <entry key="..\:/TipCalculator/app/src/main/res/layout-night/activity_main.xml" value="0.3009833262077811" />
         <entry key="..\:/TipCalculator/app/src/main/res/layout-night/activity_splash_screen.xml" value="0.2548656163113994" />
-        <entry key="..\:/TipCalculator/app/src/main/res/layout-night/fragment_main.xml" value="0.3613312202852615" />
+        <entry key="..\:/TipCalculator/app/src/main/res/layout-night/fragment_main.xml" value="0.22830269345874304" />
         <entry key="..\:/TipCalculator/app/src/main/res/layout/action_currency.xml" value="0.28815733219324496" />
         <entry key="..\:/TipCalculator/app/src/main/res/layout/action_switch.xml" value="0.28815733219324496" />
         <entry key="..\:/TipCalculator/app/src/main/res/layout/activity_main.xml" value="0.17135416666666667" />

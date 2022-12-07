@@ -16,6 +16,9 @@ android {
         versionName "1.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        vectorDrawables {
+            useSupportLibrary true
+        }
     }
 
     buildTypes {
@@ -48,6 +51,7 @@ dependencies {
     implementation "androidx.navigation:navigation-ui-ktx:2.5.1"
     implementation("androidx.datastore:datastore-preferences:1.0.0")
     implementation 'com.cottacush:CurrencyEditText:0.0.10'
+    implementation 'androidx.core:core-splashscreen:1.0.0'
     //Dagger - Hilt
     implementation("com.google.dagger:hilt-android:2.40")
     kapt("com.google.dagger:hilt-android-compiler:2.40")

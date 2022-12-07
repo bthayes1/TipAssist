@@ -34,13 +34,12 @@
 
             <ImageView
                 android:id="@+id/ivLogo"
-                android:layout_width="120dp"
+                android:layout_width="160dp"
                 android:layout_height="match_parent"
-                android:layout_gravity="center"
+                android:layout_gravity="start"
                 android:scaleType="centerCrop"
-                android:src="@drawable/nighticon"
-                tools:layout_editor_absoluteX="16dp"
-                android:contentDescription="@string/tip_assist_logo" />
+                android:src="@drawable/toolbar_logo_night"
+                android:contentDescription="@string/tip_assist_logo"/>
 
         </androidx.appcompat.widget.Toolbar>
     </androidx.constraintlayout.widget.ConstraintLayout>

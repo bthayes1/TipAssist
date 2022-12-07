@@ -2,8 +2,8 @@
 <resources>
     <color name="darker">#434343</color>
     <color name="darkest">#BCBCBF</color>
-    <color name="mid_dark">#BCBCBF</color>
-    <color name="mid_light">#BCBCBF</color>
+    <color name="mid_dark">#FFFFFF</color>
+    <color name="mid_light">#FFFFFF</color>
     <color name="light">#8BB4E6</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>

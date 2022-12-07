@@ -15,19 +15,20 @@ import java.text.DecimalFormat
 import javax.inject.Inject
 
 const val INIT_TIP_PERCENT = 20
-
 @HiltViewModel
 class MainViewModel@Inject constructor(private val settingsRepository: SettingsRepository) : ViewModel() {
     private var billAmt: Double = 0.0
     private val tipPercent = MutableLiveData<Int>()
-    private val tipAmount = MutableLiveData<Double>()
-    private val totalAmount = MutableLiveData<Double>()
+    private val tipAmount = MutableLiveData<String>()
+    private val totalAmount = MutableLiveData<String>()
     private val progressColor = MutableLiveData<Int>()
     private val roundUpEnabled = MutableLiveData<Boolean>()
     private val splitUpEnabled = MutableLiveData<Boolean>()
     private val partySize = MutableLiveData<Int>()
     private val currencySelected = MutableLiveData<String>()
     private val themeSelected = MutableLiveData<String>()
+    private val _isLoading = MutableLiveData<Boolean>()
+    val isLoading: LiveData<Boolean> = _isLoading
     private val df = DecimalFormat("0")
 
     init {
@@ -36,7 +37,7 @@ class MainViewModel@Inject constructor(private val settingsRepository: SettingsR
         roundUpEnabled.value = false
         splitUpEnabled.value = false
         partySize.value = INIT_PARTY_SIZE
-
+        _isLoading.value = true
         //Init format for rounding up
         df.roundingMode = RoundingMode.UP
         loadSettings()
@@ -44,8 +45,8 @@ class MainViewModel@Inject constructor(private val settingsRepository: SettingsR
 
     // Methods to get read-only versions of MutableLiveData
     fun getTipPercent(): LiveData<Int> = tipPercent
-    fun getTipAmount(): LiveData<Double> = tipAmount
-    fun getTotalAmount(): LiveData<Double> = totalAmount
+    fun getTipAmount(): LiveData<String> = tipAmount
+    fun getTotalAmount(): LiveData<String> = totalAmount
     fun getColor(): LiveData<Int> = progressColor
     fun getRoundUpEnabled(): LiveData<Boolean> = roundUpEnabled
     fun getSplitUpEnabled(): LiveData<Boolean> = splitUpEnabled
@@ -92,23 +93,25 @@ class MainViewModel@Inject constructor(private val settingsRepository: SettingsR
         themeSelected.value = theme
         saveSettings()
     }
-    fun setCurrency(currency: String){
+    fun setCurrency(currency: String) {
+        Log.i(TAG, currency)
         currencySelected.value = currency
-        saveSettings()
         calculateTotal() //Must calculate to update currency
+        saveSettings()
     }
-
     private fun calculateTotal() {
         val tipPercent = getTipPercent().value
         val roundUp = getRoundUpEnabled().value
         val splitUp = getSplitUpEnabled().value
         val partySize = getPartySize().value
+        val currency = getCurrencySelected().value
 
         //If any value to be used in calculation is null, throw error
         require(tipPercent != null)
         require(roundUp != null)
         require(splitUp != null)
         require(partySize != null)
+        require(currency != null)
 
         val bill = if (splitUp) billAmt/partySize else billAmt
         val tip = if (roundUp) {
@@ -116,24 +119,36 @@ class MainViewModel@Inject constructor(private val settingsRepository: SettingsR
         } else {
             bill * tipPercent / 100
         }
-        tipAmount.value = tip
-        totalAmount.value = tip + bill
+        when (bill>0){
+            true -> {
+                tipAmount.value = currency + "%.2f".format(tip)
+                val total = tip + bill
+                totalAmount.value = currency + "%.2f".format(total)
+            }
+            false -> {
+                tipAmount.value = ""
+                totalAmount.value = ""
+            }
+        }
+
 
     }
     private fun loadSettings() {
-        runBlocking {
-            Log.i(TAG, "blocking...")
+        viewModelScope.launch{
+            Log.i(TAG, "LOADING..")
             settingsRepository.loadSettings().first { userSettings ->
-                currencySelected.value = userSettings.currency
                 themeSelected.value = userSettings.theme
+                setCurrency(userSettings.currency)
+                _isLoading.value = false
                 true
             }
         }
-        Log.i(TAG, "done")
     }
     private fun saveSettings(){
         val userCurrency = getCurrencySelected().value
+        Log.i(TAG, userCurrency?:"currency is null")
         val userTheme = getTheme().value
+        Log.i(TAG, userTheme?:"theme is null")
         require(!userCurrency.isNullOrEmpty())
         require(!userTheme.isNullOrEmpty())
         viewModelScope.launch(Dispatchers.IO){
@@ -152,3 +167,4 @@ class MainViewModel@Inject constructor(private val settingsRepository: SettingsR
         private const val MAX_PARTY_SIZE = 12
     }
 }
+

@@ -1,20 +1,19 @@
 package com.example.tipcalculator.ui
 
 import android.app.AlertDialog
-import android.content.DialogInterface
 import android.os.Bundle
 import android.util.Log
-import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import android.widget.*
+import android.view.WindowManager
+import android.widget.TextView
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.widget.Toolbar
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.GravityCompat
-import androidx.core.view.get
 import androidx.drawerlayout.widget.DrawerLayout
 import com.example.tipcalculator.R
 import com.example.tipcalculator.ui.main.MainViewModel
@@ -25,12 +24,11 @@ import dagger.hilt.android.AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
     private lateinit var toolbar: Toolbar
     private lateinit var drawer: DrawerLayout
-    private lateinit var header: View
     private lateinit var nvDrawer: NavigationView
     private lateinit var themeSelection: MenuItem
     private lateinit var currencySelection: MenuItem
     private lateinit var drawerMenu: Menu
-    private lateinit var themeSelected: String
+    private var themeSelected: String = ""
     private lateinit var currency: String
     private lateinit var themes: Array<String>
     private lateinit var currencyList: Array<String>
@@ -39,16 +37,17 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        //Get theme value to reduce latency if theme is diff than system
-        themeSelected = viewModel.getTheme().value ?: "System Default"
-        changeTheme()
+        // This line makes the keyboard not shift edit text view out of view
+        window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN)
 
-        //Once theme is loaded, close splash screen
-        setTheme(R.style.Theme_TipCalculator)
+        installSplashScreen().apply {
+            setKeepOnScreenCondition {
+                viewModel.isLoading.value == true
+            }
+        }
         setContentView(R.layout.activity_main)
 
         initActivity()
-
         //Find the text views in drawer used to show current theme and currency selection
         nvDrawer.inflateHeaderView(R.layout.nav_header)
         val themeActionView = themeSelection.actionView
@@ -85,6 +84,7 @@ class MainActivity : AppCompatActivity() {
         // Set a Toolbar to replace the ActionBar.
         toolbar = findViewById(R.id.my_toolbar)
         setSupportActionBar(toolbar)
+        supportActionBar?.setDisplayShowTitleEnabled(false)
 
         // Find drawer views and menu items
         drawer = findViewById(R.id.drawer_layout)
@@ -105,6 +105,7 @@ class MainActivity : AppCompatActivity() {
                 return
             }
             else -> {
+                //Unexpected Value for theme. This should not happen and should be reported
                 if (themeSelected != "System Default"){
                     Log.e(TAG, "Value of theme is not valid, defaulting to system")
                     viewModel.setTheme("System Default")
@@ -145,6 +146,7 @@ class MainActivity : AppCompatActivity() {
         dialog.show()
     }
 
+    //Inflate Menu for Support Bar
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.app_bar_menu, menu)
         return true
