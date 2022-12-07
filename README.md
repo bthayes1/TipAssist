@@ -6,9 +6,12 @@ This is an app that assists with calculating a tip. Whether you are getting a va
 take the pressure of calculating a tip away. 
 
 ## **How do you use Tip Assist?**
-This app is built to work on android devices. Once you open the app you will see the following main screen.
+This app is built to work on Android devices. Once you open the app you will see the following main screen.
 
-<img src="https://user-images.githubusercontent.com/79590455/167200283-53f77122-a4f3-4d32-bad1-3b743b4fb030.PNG" alt="drawing" width="200"/>
+### **Tip Assist Screenshots**
+<img src="https://user-images.githubusercontent.com/79590455/206250042-c3d06f09-0be6-4a4b-834d-8e0d52fb1cbf.png" alt="drawing" title="Light Mode" width="200" hspace="30"/><img src="https://user-images.githubusercontent.com/79590455/206250731-745e4672-5705-4368-a210-fede58a2b248.png" alt="drawing" title="Dark Mode" width="200"/>
+
+
 
 The user can input their bill amount and their desired tip percent. The tip amount and total amount will be displayed. Additional functionality includes: 
 * Changing the currency symbol
@@ -17,14 +20,14 @@ The user can input their bill amount and their desired tip percent. The tip amou
 
 ### **Watch this video to see how features work**
 
-https://user-images.githubusercontent.com/79590455/167214078-d341ff9a-4ec2-4477-8780-3f0e718e73f2.mp4
+https://user-images.githubusercontent.com/79590455/206289533-5ab4a816-8642-4d7b-9d51-576eceabf3a0.mp4
 
 ### *Some additional features*
 * Both Light/Dark mode implementation
 * Splash Screen
 * Customized App Icon
 
-## **Whats to come?**
+## ****
 I am planning on publishing this app on the Google play store. I hope to add a round tip or total function, add a light/dark mode preference, and a past total amount history. 
 
 ## **Extra Information**
@@ -33,5 +36,9 @@ I decided to make this app in a response to a Android Development college course
 
 #### Credits
 Rahul Pandey YouTube Channel - https://www.youtube.com/channel/UCJNUtbsYnt-8meFSj_yF50Q
+
+
+
+
 
 
