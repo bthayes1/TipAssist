@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/themeSelection"
+        app:actionLayout="@layout/action_theme"
+        android:title="@string/appearance"/>
+    <item
+        android:id="@+id/currencySelection"
+        android:title="@string/currency"
+        app:actionLayout="@layout/action_currency"/>
+</menu>

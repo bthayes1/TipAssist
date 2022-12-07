@@ -10,4 +10,11 @@
     <string name="minusSign">-</string>
     <string name="plusSign">+</string>
     <string name="tip_assist_logo">Tip Assist Logo</string>
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="settings">Settings</string>
+    <string name="dark_mode">Dark Mode</string>
+    <string name="bill">Bill:</string>
+    <string name="appearance">Appearance</string>
+    <string name="currency">Currency</string>
+
 </resources>
