@@ -22,13 +22,14 @@ The user can input their bill amount and their desired tip percent. The tip amou
 
 https://user-images.githubusercontent.com/79590455/206289533-5ab4a816-8642-4d7b-9d51-576eceabf3a0.mp4
 
-### *Some additional features*
+### *Features*
 * Both Light/Dark mode implementation
-* Splash Screen
-* Customized App Icon
-
-## ****
-I am planning on publishing this app on the Google play store. I hope to add a round tip or total function, add a light/dark mode preference, and a past total amount history. 
+* Splash Screen API
+* DataStore
+* Kotlin Coroutines
+* ViewModels
+* Navigation Drawer
+* Hilt DI
 
 ## **Extra Information**
 I decided to make this app in a response to a Android Development college course I followed on YouTube. I am attempting to become more proficient at Android and Tip Assist is one of my first steps. This was a good learning tool to understand how to develop the UI, while also learning a lot about Kotlin. 
