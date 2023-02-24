@@ -1,7 +1,6 @@
 package com.example.tipcalculator.ui.main
 
 import android.animation.ArgbEvaluator
-import android.content.Context
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -22,13 +21,7 @@ class MainFragment : Fragment() {
 
     private var binding: FragmentMainBinding? = null
     private val mainViewModel: MainViewModel by activityViewModels()
-    private lateinit var fragmentContext: Context
     private var currencySelected = ""
-
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        fragmentContext = context
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -42,8 +35,8 @@ class MainFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         // Colors to use to change whether components are enabled.
-        val colorDisabled = ContextCompat.getColor(fragmentContext, R.color.disabled)
-        val colorEnabled = ContextCompat.getColor(fragmentContext, R.color.enabled)
+        val colorDisabled = ContextCompat.getColor(requireContext(), R.color.disabled)
+        val colorEnabled = ContextCompat.getColor(requireContext(), R.color.enabled)
         binding?.apply {
             tipPercentBar.progress = INIT_TIP_PERCENT
             etAmountInput.addTextChangedListener(object : TextWatcher{
@@ -69,8 +62,8 @@ class MainFragment : Fragment() {
                 tvTipPercent.text = "%$tipPercent"
                 val color = ArgbEvaluator().evaluate(
                     tipPercent.toFloat() / tipPercentBar.max,
-                    ContextCompat.getColor(fragmentContext, R.color.color_best_tip),
-                    ContextCompat.getColor(fragmentContext, R.color.color_worst_tip)
+                    ContextCompat.getColor(requireContext(), R.color.color_best_tip),
+                    ContextCompat.getColor(requireContext(), R.color.color_worst_tip)
                 ) as Int
                 tipPercentBar.thumb.setTint(color)
                 tipPercentBar.progressDrawable.setTint(color)
