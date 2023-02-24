@@ -8,15 +8,17 @@ import androidx.lifecycle.viewModelScope
 import com.example.tipcalculator.models.UserSettings
 import com.example.tipcalculator.repository.SettingsRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.*
-import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import java.math.RoundingMode
 import java.text.DecimalFormat
 import javax.inject.Inject
 
 const val INIT_TIP_PERCENT = 20
 @HiltViewModel
-class MainViewModel@Inject constructor(private val settingsRepository: SettingsRepository) : ViewModel() {
+class MainViewModel @Inject constructor(
+    private val settingsRepository: SettingsRepository
+    ): ViewModel() {
     private var billAmt: Double = 0.0
     private val tipPercent = MutableLiveData<Int>()
     private val tipAmount = MutableLiveData<String>()
@@ -61,18 +63,22 @@ class MainViewModel@Inject constructor(private val settingsRepository: SettingsR
         roundUpEnabled.value = !roundUp
         calculateTotal()
     }
+
     fun toggleSplitUp() {
         splitUpEnabled.value = !splitUpEnabled.value!!
         calculateTotal()
     }
+
     fun setBillAmount(total: Double) {
         billAmt = total
         calculateTotal()
     }
+
     fun setTipPercent(percent: Int) {
         tipPercent.value = percent
         calculateTotal()
     }
+
     fun changePartySize(increment: Boolean) {
         val party = getPartySize().value
         require(party != null)
@@ -89,16 +95,18 @@ class MainViewModel@Inject constructor(private val settingsRepository: SettingsR
             }
         calculateTotal()
     }
+
     fun setTheme(theme: String) {
         themeSelected.value = theme
         saveSettings()
     }
+
     fun setCurrency(currency: String) {
-        Log.i(TAG, currency)
         currencySelected.value = currency
         calculateTotal() //Must calculate to update currency
         saveSettings()
     }
+
     private fun calculateTotal() {
         val tipPercent = getTipPercent().value
         val roundUp = getRoundUpEnabled().value
@@ -133,17 +141,16 @@ class MainViewModel@Inject constructor(private val settingsRepository: SettingsR
 
 
     }
+
     private fun loadSettings() {
         viewModelScope.launch{
-            Log.i(TAG, "LOADING..")
-            settingsRepository.loadSettings().first { userSettings ->
+            settingsRepository.loadSettings().collect { userSettings ->
                 themeSelected.value = userSettings.theme
                 setCurrency(userSettings.currency)
-                _isLoading.value = false
-                true
             }
         }
     }
+
     private fun saveSettings(){
         val userCurrency = getCurrencySelected().value
         Log.i(TAG, userCurrency?:"currency is null")
@@ -159,6 +166,10 @@ class MainViewModel@Inject constructor(private val settingsRepository: SettingsR
                 )
             )
         }
+    }
+
+    fun setLoading(isLoading: Boolean) {
+        _isLoading.value = isLoading
     }
 
     companion object {

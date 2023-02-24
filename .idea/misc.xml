@@ -22,14 +22,14 @@
         <entry key="..\:/TipCalculator/app/src/main/res/drawable/ic_nighticon.xml" value="0.2115" />
         <entry key="..\:/TipCalculator/app/src/main/res/drawable/settings_icon.xml" value="0.3675" />
         <entry key="..\:/TipCalculator/app/src/main/res/drawable/splash_screen.xml" value="0.1535" />
-        <entry key="..\:/TipCalculator/app/src/main/res/layout-night/activity_main.xml" value="0.3009833262077811" />
+        <entry key="..\:/TipCalculator/app/src/main/res/layout-night/activity_main.xml" value="0.17644575770367243" />
         <entry key="..\:/TipCalculator/app/src/main/res/layout-night/activity_splash_screen.xml" value="0.2548656163113994" />
         <entry key="..\:/TipCalculator/app/src/main/res/layout-night/fragment_main.xml" value="0.22830269345874304" />
         <entry key="..\:/TipCalculator/app/src/main/res/layout/action_currency.xml" value="0.28815733219324496" />
         <entry key="..\:/TipCalculator/app/src/main/res/layout/action_switch.xml" value="0.28815733219324496" />
-        <entry key="..\:/TipCalculator/app/src/main/res/layout/activity_main.xml" value="0.17135416666666667" />
+        <entry key="..\:/TipCalculator/app/src/main/res/layout/activity_main.xml" value="0.1" />
         <entry key="..\:/TipCalculator/app/src/main/res/layout/activity_splash_screen.xml" value="0.3009833262077811" />
-        <entry key="..\:/TipCalculator/app/src/main/res/layout/fragment_main.xml" value="0.17135416666666667" />
+        <entry key="..\:/TipCalculator/app/src/main/res/layout/fragment_main.xml" value="0.1" />
         <entry key="..\:/TipCalculator/app/src/main/res/layout/nav_header.xml" value="0.29717180244829045" />
         <entry key="..\:/TipCalculator/app/src/main/res/layout/set_currency_dialog.xml" value="0.19752030782385635" />
         <entry key="..\:/TipCalculator/app/src/main/res/layout/set_theme_dialog.xml" value="0.29717180244829045" />
@@ -40,7 +40,7 @@
       </map>
     </option>
   </component>
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="Android Studio default JDK" project-jdk-type="JavaSDK">
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_18_PREVIEW" project-jdk-name="Android Studio default JDK" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/build/classes" />
   </component>
   <component name="ProjectType">

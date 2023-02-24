@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
-import android.view.View
 import android.view.WindowManager
 import android.widget.TextView
 import androidx.activity.viewModels
@@ -17,6 +16,7 @@ import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import com.example.tipcalculator.R
 import com.example.tipcalculator.ui.main.MainViewModel
+import com.google.android.gms.ads.*
 import com.google.android.material.navigation.NavigationView
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -32,6 +32,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var currency: String
     private lateinit var themes: Array<String>
     private lateinit var currencyList: Array<String>
+    private lateinit var adView: AdView
     private val viewModel: MainViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -44,6 +45,10 @@ class MainActivity : AppCompatActivity() {
             setKeepOnScreenCondition {
                 viewModel.isLoading.value == true
             }
+            // On exit listener fixed bug causing theme to not change before UI content was displayed
+            setOnExitAnimationListener {
+                it.remove()
+            }
         }
         setContentView(R.layout.activity_main)
 
@@ -52,8 +57,8 @@ class MainActivity : AppCompatActivity() {
         nvDrawer.inflateHeaderView(R.layout.nav_header)
         val themeActionView = themeSelection.actionView
         val currencyActionView = currencySelection.actionView
-        val tvCurrentTheme: TextView = themeActionView.findViewById(R.id.tvActionView)
-        val tvCurrentCurrency: TextView = currencyActionView.findViewById(R.id.tvActionViewCurrency)
+        val tvCurrentTheme: TextView = themeActionView!!.findViewById(R.id.tvActionView)
+        val tvCurrentCurrency: TextView = currencyActionView!!.findViewById(R.id.tvActionViewCurrency)
         themeSelection.setOnMenuItemClickListener {
             themeDialog()
             true
@@ -62,17 +67,55 @@ class MainActivity : AppCompatActivity() {
             currencyDialog()
             true
         }
-
         //Observers for changes in theme and currency
         viewModel.getTheme().observe(this) { theme ->
-            Log.i(TAG, "theme: $theme")
+            Log.i(TAG, "ThemeObserver: theme -> $theme")
             tvCurrentTheme.text = theme
             themeSelected = theme
             changeTheme()
+            viewModel.setLoading(false)
         }
         viewModel.getCurrencySelected().observe(this){viewModelCurrency->
             tvCurrentCurrency.text = viewModelCurrency
             currency = viewModelCurrency
+        }
+        startAds()
+    }
+
+    private fun startAds() {
+//        Log.i(TAG, "Google Mobile Ads SDK Version: " + MobileAds.getVersion())
+        MobileAds.initialize(this) {}
+        MobileAds.setRequestConfiguration(
+            RequestConfiguration.Builder().setTestDeviceIds(listOf("ABCDEF012345")).build()
+        )
+        val adRequest = AdRequest.Builder().build()
+//        Log.i(TAG, "Ad URL: $adRequest")
+        adView.loadAd(adRequest)
+        adView.adListener = object: AdListener() {
+            override fun onAdClicked() {
+                // Code to be executed when the user clicks on an ad.
+            }
+            override fun onAdClosed() {
+                // Code to be executed when the user is about to return
+                // to the app after tapping on an ad.
+            }
+            override fun onAdFailedToLoad(adError : LoadAdError) {
+                // Code to be executed when an ad request fails.
+  //              Log.i(TAG, "onAdFailedToLoad: $adError")
+            }
+            override fun onAdImpression() {
+                // Code to be executed when an impression is recorded
+                // for an ad.
+            }
+            override fun onAdLoaded() {
+                // Code to be executed when an ad finishes loading.
+                Log.i(TAG, "onAdLoaded: ")
+            }
+            override fun onAdOpened() {
+                // Code to be executed when an ad opens an overlay that
+                // covers the screen.
+                Log.i(TAG, "onAdOpened:")
+            }
         }
     }
 
@@ -92,9 +135,11 @@ class MainActivity : AppCompatActivity() {
         drawerMenu = nvDrawer.menu
         currencySelection = drawerMenu.findItem(R.id.currencySelection)
         themeSelection = drawerMenu.findItem(R.id.themeSelection)
+        adView = findViewById(R.id.adView)
    }
 
     private fun changeTheme() {
+        Log.i(TAG, "changeTheme: theme change -> $themeSelected")
         when (themeSelected){
             "Dark Mode" -> {
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
@@ -104,16 +149,16 @@ class MainActivity : AppCompatActivity() {
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
                 return
             }
-            else -> {
-                //Unexpected Value for theme. This should not happen and should be reported
-                if (themeSelected != "System Default"){
-                    Log.e(TAG, "Value of theme is not valid, defaulting to system")
-                    viewModel.setTheme("System Default")
-                }
+            "System Default" -> {
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
             }
+            //Unexpected theme value, default to system, save theme and notify console
+            else -> {
+                Log.i(TAG, "changeTheme: Unexpected theme -> $themeSelected")
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
+                viewModel.setTheme("System Default")
+            }
         }
-
     }
 
     private fun themeDialog() {
@@ -132,6 +177,7 @@ class MainActivity : AppCompatActivity() {
             dialog.dismiss()
         }
     }
+
     private fun currencyDialog(){
         val dialog = AlertDialog.Builder(this)
             .setTitle("Select Currency")
