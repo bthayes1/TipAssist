@@ -1,8 +1,8 @@
-package com.example.tipcalculator.di
+package com.brapps.tipassist.di
 
 import android.content.Context
-import com.example.tipcalculator.repository.SettingsRepository
-import com.example.tipcalculator.repository.SettingsRepositoryImpl
+import com.brapps.tipassist.repository.SettingsRepository
+import com.brapps.tipassist.repository.SettingsRepositoryImpl
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

@@ -9,7 +9,7 @@ android {
     compileSdk 33
 
     defaultConfig {
-        applicationId "com.example.tipcalculator"
+        applicationId "com.brapps.tipassist"
         minSdk 21
         targetSdk 33
         versionCode 1
@@ -37,6 +37,7 @@ android {
     buildFeatures {
         dataBinding true
     }
+    namespace 'com.brapps.tipassist'
 }
 
 dependencies {

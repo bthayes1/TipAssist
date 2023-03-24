@@ -1,4 +1,4 @@
-package com.example.tipcalculator.models
+package com.brapps.tipassist.models
 
 data class UserSettings(
     val currency: String,
