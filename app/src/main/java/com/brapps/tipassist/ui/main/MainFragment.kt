@@ -1,4 +1,4 @@
-package com.example.tipcalculator.ui.main
+package com.brapps.tipassist.ui.main
 
 import android.animation.ArgbEvaluator
 import android.os.Bundle
@@ -11,8 +11,8 @@ import android.widget.SeekBar
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import com.example.tipcalculator.R
-import com.example.tipcalculator.databinding.FragmentMainBinding
+import com.brapps.tipassist.R
+import com.brapps.tipassist.databinding.FragmentMainBinding
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint

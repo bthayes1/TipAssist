@@ -1,6 +1,6 @@
-package com.example.tipcalculator.repository
+package com.brapps.tipassist.repository
 
-import com.example.tipcalculator.models.UserSettings
+import com.brapps.tipassist.models.UserSettings
 import kotlinx.coroutines.flow.Flow
 
 interface SettingsRepository {

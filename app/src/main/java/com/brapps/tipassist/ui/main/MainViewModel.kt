@@ -1,12 +1,12 @@
-package com.example.tipcalculator.ui.main
+package com.brapps.tipassist.ui.main
 
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.tipcalculator.models.UserSettings
-import com.example.tipcalculator.repository.SettingsRepository
+import com.brapps.tipassist.models.UserSettings
+import com.brapps.tipassist.repository.SettingsRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch

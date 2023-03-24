@@ -1,4 +1,4 @@
-package com.example.tipcalculator.ui
+package com.brapps.tipassist.ui
 
 import android.app.AlertDialog
 import android.os.Bundle
@@ -14,11 +14,12 @@ import androidx.appcompat.widget.Toolbar
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
-import com.example.tipcalculator.R
-import com.example.tipcalculator.ui.main.MainViewModel
+import com.brapps.tipassist.ui.main.MainViewModel
 import com.google.android.gms.ads.*
 import com.google.android.material.navigation.NavigationView
 import dagger.hilt.android.AndroidEntryPoint
+import com.brapps.tipassist.R
+
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
@@ -34,6 +35,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var currencyList: Array<String>
     private lateinit var adView: AdView
     private val viewModel: MainViewModel by viewModels()
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

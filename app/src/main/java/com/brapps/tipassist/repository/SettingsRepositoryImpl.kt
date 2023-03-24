@@ -1,4 +1,4 @@
-package com.example.tipcalculator.repository
+package com.brapps.tipassist.repository
 
 import android.content.Context
 import android.util.Log
@@ -7,7 +7,7 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
-import com.example.tipcalculator.models.UserSettings
+import com.brapps.tipassist.models.UserSettings
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 

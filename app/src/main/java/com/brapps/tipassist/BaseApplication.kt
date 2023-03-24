@@ -1,4 +1,4 @@
-package com.example.tipcalculator
+package com.brapps.tipassist
 
 import android.app.Application
 import dagger.hilt.android.HiltAndroidApp
