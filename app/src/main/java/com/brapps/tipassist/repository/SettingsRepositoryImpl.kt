@@ -4,6 +4,7 @@ import android.content.Context
 import android.util.Log
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
@@ -16,10 +17,9 @@ val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "us
 
 class SettingsRepositoryImpl(private val context: Context) : SettingsRepository {
     companion object{
-        private const val DEFAULT_CURRENCY = "$"
-        private const val DEFAULT_NIGHT_MODE = "System Default"
         private val CURRENCY = stringPreferencesKey("NAME")
         private val THEME_SELECTED = stringPreferencesKey("THEME")
+        private val ROUNDUP = booleanPreferencesKey("ROUNDUP")
         private const val TAG = "SettingsRepositoryImpl"
     }
 
@@ -27,6 +27,7 @@ class SettingsRepositoryImpl(private val context: Context) : SettingsRepository 
         context.dataStore.edit { preferences->
             preferences[CURRENCY] = settings.currency
             preferences[THEME_SELECTED] = settings.theme
+            preferences[ROUNDUP] = settings.roundUp
         }
         Log.i(TAG, "currencyUpdated: ${settings.currency}, nightMode: ${settings.theme}")
     }
@@ -35,8 +36,9 @@ class SettingsRepositoryImpl(private val context: Context) : SettingsRepository 
         Log.i(TAG, "Loading settings...")
         val userSettingsFlow = context.dataStore.data.map { preferences ->
             UserSettings(
-                currency = preferences[CURRENCY] ?: DEFAULT_CURRENCY,
-                theme = preferences[THEME_SELECTED] ?: DEFAULT_NIGHT_MODE
+                currency = preferences[CURRENCY] ?: UserSettings.DEFAULT_CURRENCY,
+                theme = preferences[THEME_SELECTED] ?: UserSettings.DEFAULT_THEME,
+                roundUp = preferences[ROUNDUP] ?: UserSettings.DEFAULT_ROUNDUP
             )
         }
         return userSettingsFlow
