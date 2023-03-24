@@ -19,7 +19,9 @@ const val INIT_TIP_PERCENT = 20
 class MainViewModel @Inject constructor(
     private val settingsRepository: SettingsRepository
     ): ViewModel() {
-    private var billAmt: Double = 0.0
+
+    private var initialCurrency = ""
+    private var billAmt = MutableLiveData(0.00)
     private val tipPercent = MutableLiveData<Int>()
     private val tipAmount = MutableLiveData<String>()
     private val totalAmount = MutableLiveData<String>()
@@ -36,7 +38,6 @@ class MainViewModel @Inject constructor(
     init {
         Log.i(TAG, "MainViewModel initialized...")
         tipPercent.value = INIT_TIP_PERCENT
-        roundUpEnabled.value = false
         splitUpEnabled.value = false
         partySize.value = INIT_PARTY_SIZE
         _isLoading.value = true
@@ -46,6 +47,7 @@ class MainViewModel @Inject constructor(
     }
 
     // Methods to get read-only versions of MutableLiveData
+    fun getBillAmt(): LiveData<Double> = billAmt
     fun getTipPercent(): LiveData<Int> = tipPercent
     fun getTipAmount(): LiveData<String> = tipAmount
     fun getTotalAmount(): LiveData<String> = totalAmount
@@ -62,6 +64,8 @@ class MainViewModel @Inject constructor(
         require(roundUp != null)
         roundUpEnabled.value = !roundUp
         calculateTotal()
+        Log.i(TAG, "toggleRoundUp: saving roundup...")
+        saveSettings()
     }
 
     fun toggleSplitUp() {
@@ -70,7 +74,7 @@ class MainViewModel @Inject constructor(
     }
 
     fun setBillAmount(total: Double) {
-        billAmt = total
+        billAmt.value = total
         calculateTotal()
     }
 
@@ -97,40 +101,51 @@ class MainViewModel @Inject constructor(
     }
 
     fun setTheme(theme: String) {
-        themeSelected.value = theme
-        saveSettings()
+            themeSelected.value = theme
+            Log.i(TAG, "setTheme: saving theme...")
+            saveSettings()
     }
 
     fun setCurrency(currency: String) {
         currencySelected.value = currency
         calculateTotal() //Must calculate to update currency
-        saveSettings()
+        currencySelected.value = currency
+        if (currency != initialCurrency){
+            Log.i(TAG, "setCurrency: saving currency...")
+            saveSettings()
+        }
     }
 
     private fun calculateTotal() {
+        val billAmt = getBillAmt().value ?: 0.00
         val tipPercent = getTipPercent().value
         val roundUp = getRoundUpEnabled().value
         val splitUp = getSplitUpEnabled().value
         val partySize = getPartySize().value
-        val currency = getCurrencySelected().value
+        val currency = getCurrencySelected().value ?: "$"
 
         //If any value to be used in calculation is null, throw error
         require(tipPercent != null)
-        require(roundUp != null)
         require(splitUp != null)
         require(partySize != null)
-        require(currency != null)
 
         val bill = if (splitUp) billAmt/partySize else billAmt
-        val tip = if (roundUp) {
-            df.format(bill * tipPercent / 100).toDouble()
-        } else {
-            bill * tipPercent / 100
+        var tip = bill * tipPercent / 100
+        val unroundedTotal = bill + tip
+        Log.i(TAG, "calculateTotal: $roundUp")
+        val total = if (roundUp != null && roundUp){
+            val roundedTotal = df.format(bill + tip).toDouble()
+            val difference = roundedTotal - unroundedTotal
+            tip += difference
+            roundedTotal
+        }else{
+            unroundedTotal
         }
+
+        Log.i(TAG, "calculateTotal: bill $bill, tip $tip, total $total")
         when (bill>0){
             true -> {
                 tipAmount.value = currency + "%.2f".format(tip)
-                val total = tip + bill
                 totalAmount.value = currency + "%.2f".format(total)
             }
             false -> {
@@ -138,31 +153,36 @@ class MainViewModel @Inject constructor(
                 totalAmount.value = ""
             }
         }
-
-
     }
 
     private fun loadSettings() {
         viewModelScope.launch{
             settingsRepository.loadSettings().collect { userSettings ->
+                Log.i(TAG, "loadSettings: $userSettings")
                 themeSelected.value = userSettings.theme
-                setCurrency(userSettings.currency)
+                currencySelected.value = userSettings.currency
+                roundUpEnabled.value = userSettings.roundUp
+                initialCurrency = userSettings.currency
             }
         }
     }
 
     private fun saveSettings(){
         val userCurrency = getCurrencySelected().value
-        Log.i(TAG, userCurrency?:"currency is null")
         val userTheme = getTheme().value
-        Log.i(TAG, userTheme?:"theme is null")
+        val roundUp = getRoundUpEnabled().value
+
         require(!userCurrency.isNullOrEmpty())
         require(!userTheme.isNullOrEmpty())
+        require(roundUp != null)
+
         viewModelScope.launch(Dispatchers.IO){
+            Log.i(TAG, "saveSettings: saving...")
             settingsRepository.saveSettings(
                 UserSettings(
                     currency = userCurrency,
-                    theme = userTheme
+                    theme = userTheme,
+                    roundUp = roundUp
                 )
             )
         }

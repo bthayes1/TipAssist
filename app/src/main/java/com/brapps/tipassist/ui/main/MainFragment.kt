@@ -2,13 +2,13 @@ package com.brapps.tipassist.ui.main
 
 import android.animation.ArgbEvaluator
 import android.os.Bundle
-import android.text.Editable
-import android.text.TextWatcher
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.SeekBar
 import androidx.core.content.ContextCompat
+import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import com.brapps.tipassist.R
@@ -39,14 +39,11 @@ class MainFragment : Fragment() {
         val colorEnabled = ContextCompat.getColor(requireContext(), R.color.enabled)
         binding?.apply {
             tipPercentBar.progress = INIT_TIP_PERCENT
-            etAmountInput.addTextChangedListener(object : TextWatcher{
-                override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
-                override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
-                override fun afterTextChanged(p0: Editable?) {
-                    val value = etAmountInput.getNumericValue()
-                    mainViewModel.setBillAmount(value)
-                }
-            })
+
+            etAmountInput.doOnTextChanged { text, start, before, count ->
+                mainViewModel.setBillAmount(etAmountInput.getNumericValue())
+            }
+
             tipPercentBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
                 override fun onProgressChanged(p0: SeekBar?, p1: Int, p2: Boolean) {
                     mainViewModel.setTipPercent(p1)
@@ -90,15 +87,20 @@ class MainFragment : Fragment() {
                 }
             }
             mainViewModel.getRoundUpEnabled().observe(viewLifecycleOwner){isEnabled->
+                Log.i(TAG, "onViewCreated: $isEnabled")
+                btnRound.isChecked = isEnabled
                 when (isEnabled){
                     true -> btnRound.trackDrawable.setTint(colorEnabled)
                     false -> btnRound.trackDrawable.setTint(colorDisabled)
                 }
             }
             mainViewModel.getCurrencySelected().observe(viewLifecycleOwner) { currency ->
-                etAmountInput.setCurrencySymbol(currency, false)
-                etAmountInput.setText("")
-                currencySelected = currency
+                Log.i(TAG, "onViewCreated: currency $currency")
+                if (currency != currencySelected){
+                    etAmountInput.setCurrencySymbol(currency, false)
+                    currencySelected = currency
+                    etAmountInput.setText("")
+                }
             }
             btnRound.setOnClickListener {
                 mainViewModel.toggleRoundUp()
@@ -114,9 +116,6 @@ class MainFragment : Fragment() {
             }
         }
     }
-
-    
-
     companion object {
         private const val TAG = "MainFragment"
     }

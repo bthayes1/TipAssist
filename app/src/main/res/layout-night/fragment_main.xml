@@ -47,6 +47,7 @@
                 app:layout_constraintBottom_toBottomOf="@+id/tvBillAmount"
                 app:layout_constraintEnd_toEndOf="@+id/tipPercentBar"
                 app:maxNumberOfDecimalDigits="2"
+                android:imeOptions="actionDone"
                 tools:ignore="TextContrastCheck" />
 
             <TextView

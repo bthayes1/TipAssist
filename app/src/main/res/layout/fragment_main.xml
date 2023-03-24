@@ -46,6 +46,7 @@
                 app:layout_constraintEnd_toEndOf="@+id/tipPercentBar"
                 app:maxNumberOfDecimalDigits="2"
                 android:textCursorDrawable="@color/mid_light"
+                android:imeOptions="actionDone"
                 tools:ignore="TextContrastCheck" />
 
             <TextView

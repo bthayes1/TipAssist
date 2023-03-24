@@ -85,40 +85,9 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun startAds() {
-//        Log.i(TAG, "Google Mobile Ads SDK Version: " + MobileAds.getVersion())
-        MobileAds.initialize(this) {}
-        MobileAds.setRequestConfiguration(
-            RequestConfiguration.Builder().setTestDeviceIds(listOf("ABCDEF012345")).build()
-        )
+        MobileAds.initialize(this)
         val adRequest = AdRequest.Builder().build()
-//        Log.i(TAG, "Ad URL: $adRequest")
         adView.loadAd(adRequest)
-        adView.adListener = object: AdListener() {
-            override fun onAdClicked() {
-                // Code to be executed when the user clicks on an ad.
-            }
-            override fun onAdClosed() {
-                // Code to be executed when the user is about to return
-                // to the app after tapping on an ad.
-            }
-            override fun onAdFailedToLoad(adError : LoadAdError) {
-                // Code to be executed when an ad request fails.
-  //              Log.i(TAG, "onAdFailedToLoad: $adError")
-            }
-            override fun onAdImpression() {
-                // Code to be executed when an impression is recorded
-                // for an ad.
-            }
-            override fun onAdLoaded() {
-                // Code to be executed when an ad finishes loading.
-                Log.i(TAG, "onAdLoaded: ")
-            }
-            override fun onAdOpened() {
-                // Code to be executed when an ad opens an overlay that
-                // covers the screen.
-                Log.i(TAG, "onAdOpened:")
-            }
-        }
     }
 
     private fun initActivity() {
@@ -170,7 +139,9 @@ class MainActivity : AppCompatActivity() {
             .setTitle("Set Theme")
             .setSingleChoiceItems(themes, checkedPosition){ window, position ->
                 newThemeSelected = themes[position]
-                if (newThemeSelected != themeSelected) viewModel.setTheme(newThemeSelected)
+                if (newThemeSelected != themeSelected){
+                    viewModel.setTheme(newThemeSelected)
+                }
                 window.dismiss()
             }
             .setNegativeButton("Close", null)
