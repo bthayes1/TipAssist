@@ -5,6 +5,9 @@
 This is an app that assists with calculating a tip. Whether you are getting a valet, eating, at a bar, etc, Tip Assist will
 take the pressure of calculating a tip away. 
 
+*Google Play Store Listing*: 
+https://play.google.com/store/apps/details?id=com.brapps.tipassist
+
 ## **How do you use Tip Assist?**
 This app is built to work on Android devices. Once you open the app you will see the following main screen.
 
@@ -16,23 +19,26 @@ This app is built to work on Android devices. Once you open the app you will see
 The user can input their bill amount and their desired tip percent. The tip amount and total amount will be displayed. Additional functionality includes: 
 * Changing the currency symbol
 * Splitting the bill
-* Rounding up the tip amount
+* Rounding up the bill amount
 
 ### **Watch this video to see how features work**
 
-https://user-images.githubusercontent.com/79590455/206289533-5ab4a816-8642-4d7b-9d51-576eceabf3a0.mp4
+https://user-images.githubusercontent.com/79590455/228405506-f6977446-3ab9-4804-bfc5-30de17a56d2d.mp4
 
 ### *Features*
 * Both Light/Dark mode implementation
 * Splash Screen API
 * DataStore
-* Kotlin Coroutines
 * ViewModels
 * Navigation Drawer
 * Hilt DI
+* AdMob
 
 ## **Extra Information**
 I decided to make this app in a response to a Android Development college course I followed on YouTube. I am attempting to become more proficient at Android and Tip Assist is one of my first steps. This was a good learning tool to understand how to develop the UI, while also learning a lot about Kotlin. 
+
+
+
 
 
 #### Credits
